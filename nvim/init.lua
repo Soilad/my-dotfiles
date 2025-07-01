@@ -11,6 +11,58 @@ require("autoclose").setup()
 vim.cmd("colorscheme sunbather")
 vim.cmd("set number")
 vim.cmd("set relativenumber")
+
+-- require("ibl").setup()
+require("mini.indentscope").setup({
+	-- Draw options
+	draw = {
+		-- Delay (in ms) between event and start of drawing scope indicator
+		delay = 100,
+
+		-- Whether to auto draw scope: return `true` to draw, `false` otherwise.
+		-- Default draws only fully computed scope (see `options.n_lines`).
+		predicate = function(scope)
+			return not scope.body.is_incomplete
+		end,
+
+		-- Symbol priority. Increase to display on top of more symbols.
+		priority = 2,
+	},
+
+	-- Module mappings. Use `''` (empty string) to disable one.
+	mappings = {
+		-- Textobjects
+		object_scope = "ii",
+		object_scope_with_border = "ai",
+
+		-- Motions (jump to respective border line; if not present - body line)
+		goto_top = "[i",
+		goto_bottom = "]i",
+	},
+
+	-- Options which control scope computation
+	options = {
+		-- Type of scope's border: which line(s) with smaller indent to
+		-- categorize as border. Can be one of: 'both', 'top', 'bottom', 'none'.
+		border = "both",
+
+		-- Whether to use cursor column when computing reference indent.
+		-- Useful to see incremental scopes with horizontal cursor movements.
+		indent_at_cursor = true,
+
+		-- Maximum number of lines above or below within which scope is computed
+		n_lines = 10000,
+
+		-- Whether to first check input line to be a border of adjacent scope.
+		-- Use it if you want to place cursor on function header to get scope of
+		-- its body.
+		try_as_border = false,
+	},
+
+	-- Which character to use for drawing scope indicator
+	symbol = "│",
+})
+
 require("toggleterm").setup({
 	float_opts = {
 		border = "curved",
@@ -88,7 +140,7 @@ cmp.setup({
 	mapping = {
 		["<C-n>"] = cmp.mapping.select_next_item(),
 		["<C-p>"] = cmp.mapping.select_prev_item(),
-		["<Tab>"] = cmp.mapping.confirm({ select = true }), -- Confirm completion
+		["<Enter>"] = cmp.mapping.confirm({ select = true }), -- Confirm completion
 	},
 	sources = {
 		{ name = "nvim_lsp" },
@@ -110,6 +162,15 @@ lspconfig.ruff.setup({
 	},
 })
 
+-- Python (Pyright)
+lspconfig.pyright.setup({
+	settings = {
+		pyright = {
+			linting = true, -- Enable linting
+			formatting = false, -- Enable formatting
+		},
+	},
+})
 -- Rust (rust-analyzer)
 lspconfig.rust_analyzer.setup({
 	settings = {
@@ -144,3 +205,48 @@ vim.lsp.enable("pyright")
 require("lspconfig").pyright.setup({})
 require("lspconfig").ruff.setup({})
 require("lspconfig").rust_analyzer.setup({})
+
+local fineline = require("fine-cmdline")
+local fn = fineline.fn
+
+fineline.setup({
+	cmdline = {
+		enable_keymaps = true,
+		smart_history = true,
+		prompt = ": ",
+	},
+	popup = {
+		position = {
+			row = "40%",
+			col = "50%",
+		},
+		size = {
+			width = "40%",
+		},
+		border = {
+			style = "rounded",
+		},
+		win_options = {
+			winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+		},
+	},
+	hooks = {
+		set_keymaps = function(imap, feedkeys)
+			-- Restore default keybindings...
+			-- Except for `<Tab>`, that's what everyone uses to autocomplete
+			imap("<Esc>", fn.close)
+			imap("<C-c>", fn.close)
+
+			imap("<Up>", fn.up_search_history)
+			imap("<Down>", fn.down_search_history)
+		end,
+	},
+})
+
+require("visual-surround").setup({
+	use_default_keymaps = false,
+
+	surround_chars = { "{", "}", "[", "]", "(", ")", "'", '"' },
+
+	-- your config
+})

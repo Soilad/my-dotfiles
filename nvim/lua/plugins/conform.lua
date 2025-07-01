@@ -19,7 +19,7 @@ return {
 					toml = { "prettier" },
 					rust = { "rustfmt", "rust-analyzer" },
 					lua = { "stylua" },
-					python = { "ruff", "pylint", "jedi" },
+					python = { "ruff_format", "pylint" },
 				},
 			})
 

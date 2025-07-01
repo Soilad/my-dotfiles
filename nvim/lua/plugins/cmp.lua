@@ -48,13 +48,12 @@ return {
 	},
 	{ "autoclose.nvim" },
 	{
-		"kylechui/nvim-surround",
-		version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
-		event = "VeryLazy",
+		"NStefan002/visual-surround.nvim",
 		config = function()
-			require("nvim-surround").setup({
-				-- here, or leave empty to use defaults
+			require("visual-surround").setup({
+				-- your config
 			})
+			-- [optional] custom keymaps
 		end,
 	},
 }
