@@ -1,0 +1,331 @@
+(defwindow status
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive true
+  :windowtype "dock"
+  :wm-ignore true
+  :geometry (geometry
+              :x "0px"
+              :y "0px"
+              :width "50%"
+              :height "50%"
+              :anchor "center center")
+  (powermenu)
+)
+
+(defwindow search
+  :monitor 0 ;; Optional for X11
+  :stacking "adsbg"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore false
+  :geometry (geometry
+              :x "0px"
+              :y "0px"
+              :width "20%"
+              :height "50%"
+              )
+  (search)
+)
+
+(defwindow time
+  :stacking "fg"
+  :exclusive true
+  :windowtype "dock"
+  :wm-ignore true
+  :geometry (geometry
+              :x "0"
+              :y "4px"
+              :width "5%"
+              :height "64px"
+              :anchor "top center")
+  (time-text)
+)
+
+(defwindow left
+  :monitor 0 ;; Optional for X11
+  :stacking "bg"
+  :windowtype "dock"
+  :active false
+  :wm-ignore true
+  :geometry (geometry
+              :x "0%"
+              :y "0%"
+              :width "10%"
+              :height "64px"
+              :anchor "top left")
+  (buttons)
+
+  )
+
+ (defwindow right
+   :monitor 0 ;; Optional for X11
+  :stacking "bg"
+  :windowtype "dock"
+  :active false
+  :wm-ignore true
+   :geometry (geometry
+               :x "0%"
+               :y "0%"
+               :width "10%"
+               :height "64px"
+               :anchor "top right")
+   (stats)
+   )
+; imp values
+
+(defpoll t :interval "30s" `date +"%I":"%M"" ""%p"`)
+(defpoll w :interval "0s" `xdotool getwindowfocus getwindowname | cut -d ' ' -f 1`)
+
+(defpoll v :interval "0s" `amixer -D pulse sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'`)
+(defpoll m :interval "0s" `amixer -D pulse sget Capture | awk -F '[^0-9]+' '/Left:/{print $3}'`)
+
+(defpoll weather-icon :interval "3h" `curl wttr.in/?format="%c"`)
+(defpoll weather :interval "3h" `curl wttr.in/?format="%C"`)
+(defpoll temperature :interval "3h" `curl wttr.in/?format="%t"`)
+(defpoll speed :interval "3h" `curl wttr.in/?format="%w"`)
+(defpoll humidity :interval "3h" `curl wttr.in/?format="%h"`)
+
+(defpoll artist :interval "1s" `playerctl metadata --format '{{ artist }}'`)
+(defpoll song :interval "1s" `playerctl metadata --format '{{ title }}'`)
+(defpoll playin :interval "0s" `playerctl status`)
+(defpoll progress-bar :interval "50ms" `playerctl metadata --format '{{ position * 100 / mpris:length }}'`)
+(deflisten cava :interval "0s" `bash ~/.config/eww/scripts/cava.sh`)
+
+(defvar user "soi")
+(defvar pc "wowbigredsquarething")
+(defpoll notes :interval "10s" `cat ~/notes.txt`)
+
+(defvar power-spacing 10)
+(defvar side-spacing 0)
+(defvar cap 18)
+(defvar player-button-spacing 45)
+(defvar player-text-spacing 5)
+(defvar weather-spacing 0)
+
+; widgets
+
+(defwidget time-text[]
+  (box :space-evenly false
+    :class "topbar timey"
+    (button  
+      (label :class "timey" :text {t})
+    )
+  )
+)
+
+(defwidget buttons []
+  (box :space-evenly false
+        :spacing 0
+  (box :space-evenly false
+    :class "topbar lefty"
+  (button :class "topbar"
+            :onclick "eww open status --toggle" 
+    (circular-progress :label "vol"
+             :start-at 25
+             :value {EWW_CPU["avg"]}
+             :thickness 6
+      (label :text "☭"
+             :xalign 0.5)
+      )
+    )
+  (label :text w)
+  )
+  (image :image-height 64
+      :path "/home/soi/.config/eww/sprites/left.png")
+  )
+)
+
+(defwidget stats []
+  (box :space-evenly false
+        :spacing 0
+        :halign "end"
+  (image :image-height 64
+      :path "/home/${user}/.config/eww/sprites/right.png")
+  (box :space-evenly false
+    :class "topbar righty"
+    (button :class "topbar"
+            :onclick "gnome-system-monitor" 
+    (circular-progress :label "vol"
+             :start-at 25
+             :value {EWW_CPU["avg"]}
+             :thickness 6
+      (label :text ""
+             :xalign 0.5)
+      )
+    )
+    (button :class "topbar"
+            :onclick "gnome-system-monitor" 
+    (circular-progress :label "vol"
+             :start-at 25
+             :value {EWW_RAM["used_mem_perc"]}
+             :thickness 6
+      (label :text ""
+      :xalign 0.5)
+      )
+    )
+    (button :class "topbar"
+            :onclick "gnome-control-center" 
+    (circular-progress :label "vol"
+             :start-at 25
+             :value {((EWW_NET["wlp15s0"]["NET_DOWN"] + EWW_NET["wlp15s0"]["NET_UP"]) / 2) / 118663}
+             :thickness 6
+    
+      (label :text "󰤨"
+      :xalign 0.5)
+      )
+    )
+    (eventbox
+        :onscroll {"python ~/.config/eww/scripts/volume.py sink {}"}
+        :onclick "pavucontrol"
+        :class "topbar"
+      (circular-progress :label "vol"
+               :start-at 25
+               :value {v}
+               :thickness 6
+        (label :text ""
+        :xalign 0.5)
+      ))
+    (eventbox
+        :onscroll {"python ~/.config/eww/scripts/volume.py source {}"}
+        :onclick "pavucontrol"
+        :class "topbar"
+      (circular-progress :label "vol"
+               :start-at 25
+               :value {m}
+               :thickness 6
+        (label :text ""
+        :xalign 0.5)
+      ))
+    )
+   )
+  )
+
+(defwidget powermenu[]
+(box :space-evenly false
+    :halign "center"
+    :valign "center"
+    :orientation "horizontal"
+    (box :space-evenly false
+      :spacing side-spacing
+      :class "bg"
+      :orientation "vertical"
+      (image :image-height 400
+        :path "/home/soi/.config/neofetch/FUCK\ YEAAAAA.png")
+
+      (label :class "smol" :text {cava})
+      ; (label 
+      ;   :class "smol"
+      ;   :text "${user} : ${pc}")
+      ; (label 
+      ;   :class "smol"
+      ;   :text "${round((EWW_DISK["/"]["free"])/(1073741824),2)} Gb free")
+      (button
+        ; :vscroll true
+        :class "notes"
+        :onclick `kitty nvim ~/notes.txt | eww close status`
+        (label 
+          :text notes)
+        )
+    )
+    (box :space-evenly false
+      :orientation "vertical"
+        (box :space-evenly false
+            :class "bg"
+            :orientation "vertical"
+          (label :class "smol" :text "〠 the sun smiles with eternal malice")
+          (box :space-evenly true
+            :orientation "horizontal"
+            :spacing weather-spacing
+            (label :class "big" 
+                   :text weather-icon)
+            (box :space-evenly false
+                  :orientation "vertical"
+                  (label :text weather)
+                  (label :text temperature)
+                  (label :text speed)
+                  (label :text humidity)
+            )
+          )
+        )
+        
+      (box :space-evenly false
+        :class "powermenu"
+        :spacing power-spacing
+        :orientation "horizontal"
+        (box :space-evenly false
+          :class "bg"
+          :spacing player-text-spacing
+          :orientation "vertical"
+
+          (label :text {strlength(song) > cap ? substring( song , round((sin(progress-bar) + 0.5 )/ 2 * strlength(song), 0) , cap ) : song })
+          (label :text {strlength(artist) > cap ? substring( artist, round((cos(progress-bar) + 0.5 ) / 2 * strlength(artist), 0) , cap ) : artist })
+          (progress :value progress-bar)
+          (box :space-evenly false
+            :spacing player-button-spacing
+            :class "trans"
+            :orientation "horizontal"
+            (button 
+              :onclick "playerctl previous"
+              "󰒮")
+            (button 
+              :onclick "playerctl play-pause"
+              {playin == "Paused" ? "󰐊" : "󰏤"})
+            (button 
+              :onclick "playerctl next"
+              "󰒭")
+          )
+        )
+        (box :space-evenly false
+          :class "powermenu"
+          :spacing power-spacing
+          :orientation "vertical"
+          (box :space-evenly false
+            :spacing power-spacing
+            :orientation "horizontal"
+            (button :onclick "systemctl poweroff"
+              "󰐥")
+            (button :onclick "systemctl reboot"
+              "󰜉")
+          )
+          (box :space-evenly false
+            :spacing power-spacing
+            :orientation "horizontal"
+            (button :onclick "loginctl terminate-session"
+              "󰍃")
+            (button :onclick "systemctl hibernate"
+              "󰒲")
+          )
+        )
+      )
+    )
+  )
+)
+
+
+(defwidget search[]
+(box :space-evenly false
+    :orientation "horizontal"
+    (box :space-evenly false
+      :spacing side-spacing
+      :class "bg"
+      :orientation "vertical"
+      (input :class "bg" :value "aaa")
+
+      (label :class "smol" :text {cava})
+      ; (label 
+      ;   :class "smol"
+      ;   :text "${user} : ${pc}")
+      ; (label 
+      ;   :class "smol"
+      ;   :text "${round((EWW_DISK["/"]["free"])/(1073741824),2)} Gb free")
+      (button
+        ; :vscroll true
+        :class "notes"
+        :onclick `kitty nvim ~/notes.txt | eww close status`
+        (label 
+          :text notes)
+        )
+    )
+  )
+)
