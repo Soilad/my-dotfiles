@@ -42,8 +42,8 @@ let s:dark_green      = { "gui": "#10A778", "cterm": "2"   }
 let s:light_green     = { "gui": "#5FD7A7", "cterm": "10"  }
 let s:light_purple    = { "gui": "#a790d5", "cterm": "140" }
 let s:yellow          = { "gui": "#F3E430", "cterm": "11"  }
-let s:light_yellow    = { "gui": "#ffff87", "cterm": "228" }
-let s:dark_yellow     = { "gui": "#A89C14", "cterm": "3"   }
+let s:light_yellow	  = { "gui": "#F21353", "cterm": "168" }
+let s:dark_yellow	  = { "gui": "#EE0000", "cterm": "204" }
 
 let s:background = &background
 
@@ -137,12 +137,12 @@ call s:h("Underlined",    {"fg": s:norm, "gui": "underline", "cterm": "underline
 call s:h("Ignore",        {"fg": s:bg})
 call s:h("Error",         {"fg": s:actual_white, "bg": s:red, "cterm": "bold"})
 call s:h("Todo",          {"fg": s:pink, "gui": "underline", "cterm": "underline"})
-call s:h("SpecialKey",    {"fg": s:light_green})
+call s:h("SpecialKey",    {"fg": s:light_red})
 call s:h("NonText",       {"fg": s:medium_gray})
 call s:h("Directory",     {"fg": s:dark_blue})
 call s:h("ErrorMsg",      {"fg": s:red})
-call s:h("IncSearch",     {"bg": s:yellow, "fg": s:light_black})
-call s:h("Search",        {"bg": s:light_green, "fg": s:light_black})
+call s:h("IncSearch",     {"bg": s:pink, "fg": s:light_black})
+call s:h("Search",        {"bg": s:light_red, "fg": s:light_black})
 call s:h("MoreMsg",       {"fg": s:medium_gray, "cterm": "bold", "gui": "bold"})
 hi! link ModeMsg MoreMsg
 call s:h("LineNr",        {"fg": s:bg_subtle})
@@ -154,27 +154,27 @@ call s:h("VertSplit",     {"bg": s:bg_very_subtle, "fg": s:bg_very_subtle})
 call s:h("Title",         {"fg": s:dark_blue})
 call s:h("Visual",        {"fg": s:norm, "bg": s:visual})
 call s:h("VisualNOS",     {"bg": s:bg_subtle})
-call s:h("WarningMsg",    {"fg": s:yellow})
+call s:h("WarningMsg",    {"fg": s:pink})
 call s:h("WildMenu",      {"fg": s:bg, "bg": s:norm})
 call s:h("Folded",        {"fg": s:medium_gray})
 call s:h("FoldColumn",    {"fg": s:bg_subtle})
-call s:h("DiffAdd",       {"fg": s:green})
+call s:h("DiffAdd",       {"fg": s:red})
 call s:h("DiffDelete",    {"fg": s:red})
-call s:h("DiffChange",    {"fg": s:dark_yellow})
+call s:h("DiffChange",    {"fg": s:dark_pink})
 call s:h("DiffText",      {"fg": s:dark_blue})
-call s:h("SignColumn",    {"fg": s:light_green})
+call s:h("SignColumn",    {"fg": s:light_red})
 
 
 if has("gui_running")
   call s:h("SpellBad",    {"gui": "underline", "sp": s:red})
-  call s:h("SpellCap",    {"gui": "underline", "sp": s:light_green})
+  call s:h("SpellCap",    {"gui": "underline", "sp": s:light_red})
   call s:h("SpellRare",   {"gui": "underline", "sp": s:light_purple})
-  call s:h("SpellLocal",  {"gui": "underline", "sp": s:dark_green})
+  call s:h("SpellLocal",  {"gui": "underline", "sp": s:dark_red})
 else
   call s:h("SpellBad",    {"cterm": "underline", "fg": s:red})
-  call s:h("SpellCap",    {"cterm": "underline", "fg": s:light_green})
+  call s:h("SpellCap",    {"cterm": "underline", "fg": s:light_red})
   call s:h("SpellRare",   {"cterm": "underline", "fg": s:light_purple})
-  call s:h("SpellLocal",  {"cterm": "underline", "fg": s:dark_green})
+  call s:h("SpellLocal",  {"cterm": "underline", "fg": s:dark_red})
 endif
 
 call s:h("Pmenu",         {"fg": s:norm, "bg": s:bg_very_subtle})
@@ -199,8 +199,8 @@ call s:h("htmlH5",        {"bg": s:bg, "fg": s:norm})
 call s:h("htmlH6",        {"bg": s:bg, "fg": s:norm})
 
 " Syntastic
-call s:h("SyntasticWarningSign",    {"fg": s:yellow})
-call s:h("SyntasticWarning",        {"bg": s:yellow, "fg": s:light_black, "gui": "bold", "cterm": "bold"})
+call s:h("SyntasticWarningSign",    {"fg": s:pink})
+call s:h("SyntasticWarning",        {"bg": s:pink, "fg": s:light_black, "gui": "bold", "cterm": "bold"})
 call s:h("SyntasticErrorSign",      {"fg": s:red})
 call s:h("SyntasticError",          {"bg": s:red, "fg": s:white, "gui": "bold", "cterm": "bold"})
 
