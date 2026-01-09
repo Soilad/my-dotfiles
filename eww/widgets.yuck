@@ -41,7 +41,7 @@
 )
 
 (defwidget vibin [text cap ?class]
-            (label :class {class} :text {strlength(text) > cap ? substring(text, round((sin(playerctl.position/1000000) + 1 )/ 2 * (strlength(text) - cap), 0) , cap ) : text})
+            (label :class {class} :text {strlength(text) > cap ? substring(text, round((sin(playerctl.position/1000000) + 1 ) * (strlength(text) - cap), 0) , cap ) : text})
 )
 
 (defwidget bar-icon [?onscrollup ?onscrolldown onclick icon value]
