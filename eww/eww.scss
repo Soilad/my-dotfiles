@@ -1,114 +1,228 @@
-* { all: unset; }
+* { all: unset; 
+  transition: all .3s ease;
+}
 
+$opacity: 0.9;
+$glow: 0.65;
+$primary: #fff;
+$secondary: #f00;
+$tertiary: #080808;
+$tertiary-light: #171717;
+$tertiary-dark: #000000;
+$raised: 10px;
 
-// box-shadow: 0 0 0 10px #f00, inset 0 0 10px 1px #f00;
+@mixin inactive {
+  box-shadow:
+    0 0 10px rgba($tertiary-dark, 0),
+    0 0 10px rgba($tertiary-light, 0),
+    0 0 10px rgba($tertiary, 0);
+  background-color: rgba($tertiary, 0);
+  border-radius: 100px;
+  label {
+    color: $primary;
+    text-shadow: 0 0 10px rgba($secondary, 0);
+  }
+}
 
-.righty {
-  font-family: 'Soilad','0xProto Nerd Font Mono';
-  padding-left: 64px;
-  border-radius: 0 0 32px 32px;
-  opacity: 0.85;
-  background: #000;
+@mixin active {
+  border-radius: 64px;
+  box-shadow:
+    $raised $raised 10px rgba($tertiary-dark, $opacity),
+    (-$raised) (-$raised) 10px rgba($tertiary-light, $opacity),
+    0 0 10px rgba($tertiary, $opacity);
+  background-color: rgba($tertiary, $opacity);
+  label {
+    color: $secondary;
+    text-shadow: 0 0 10px rgba($secondary, $glow);
+  }
+}
 
+@mixin unglow {
+  background-color: rgba($tertiary, $opacity);
+  box-shadow: 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow),0 0 10px 1px rgba($tertiary-dark,0.4);
+  border-radius: 100px;
+}
+
+@mixin glow {
+      // background-color: #300;
+      box-shadow: inset 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow);
+      // box-shadow: 4px 4px 4px 2px rgba($tertiary-dark,$opacity), -4px -4px 4px 2px rgba($tertiary-light,$opacity);
+      background-color: rgba($tertiary,$opacity);
+      label {color: $secondary;}
+      text-shadow: 0 0 10px rgba($secondary, $glow);
+      border-radius: 32px;
 }
 
 .lefty {
+  background-color: rgba($tertiary-dark, $opacity);
   font-family: 'Soilad','0xProto Nerd Font Mono';
   padding-right: 64px;
-  border-radius: 0 0 32px 32px;
-  opacity: 0.85;
-  background: #000;
 
+  border-radius: 0 0 32px 0;
+}
+
+.righty {
+  background-color: rgba($tertiary-dark, $opacity);
+  font-family: 'Soilad','0xProto Nerd Font Mono';
+  padding-left: 64px;
+  border-radius: 0 0 0 32px;
 }
 
 .timey {
-  color: #f00;
+  background-color: rgba($tertiary-dark, $opacity);
   label {
-  font-size: 6;
+  // box-shadow: inset 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary,$opacity),0 0 10px 1px rgba($tertiary-dark,0.4);
+  font-size: 3;
   }
-  padding: 0 15px;
+  padding: 0 16px;
+  border-radius: 0 0 32px 32px;
+}
+
+.panel {
+  font-family: 'Soilad','0xProto Nerd Font Mono';
+  label {
+    text-shadow: 0 0 10px rgba($tertiary-dark, 1);
+  }
+  padding: 10px 20px;
+  margin: 5px 0;
   border-radius: 32px;
+  font-size: 26;
+  // box-shadow: 0 0 10px 1px $secondary;
+  background-color: rgba($tertiary-dark, $opacity);
+
+}
+.controls {
+  button {
+    &:hover {
+      @include active;
+    }
+  }
+  label {
+    font-size: 27px;
+    text-shadow: 0 0 10px rgba($tertiary-dark, 1);
+  }
+}
+
+progress {
+  background-color: rgba($secondary, $opacity);
+  border-radius: 10px;
+  // padding: 2px;
+  margin: 0 -5px 0 0;
+  box-shadow: 0 0 10px 1px $tertiary-dark;
+}
+slider {
+  padding: 5px;
+  // margin: -2.5px 0 0 0;
+  background-color: rgba($tertiary-dark, 0);
+  border-radius: 10px;
+  // box-shadow: 0 0 10px 1px $tertiary-dark;
 }
 
 .topbar {
-  transition: all .2s ease;
-  &:hover {
-      background-color: #300;
-      border-radius: 0 0 32px 32px;
-  }
+  padding: 0 10px;
   label {
-    color: #fff;
-    font-size: 40;
-    background-color: #000;
+    color: $primary;
+    font-size: 28;
+    background-color: rgba($tertiary-dark,0);
     padding: 0 10px;
   }
-  image {
-    all: unset;
+  &:hover {
+    @include glow;
   }
 }
 
 .powermenu button, .bg {
-  font-size: 48;
-  background-color: #000;
+  font-size: 36;
   margin: 20px; 
   padding: 60px 75px;
-  box-shadow: 0 0 0 10px #f00;
-  border-radius: 100px;
-  transition: all .2s ease;
+  @include unglow;
   &:hover {
-      box-shadow: 0 0 0 10px #f00, inset 0 0 10px 1px #f00;
-      color: #f00;
+    @include glow;
   }
 
 }
 
+
 .notes {
-  font-size: 36;
-  background-color: #000;
+  font-size: 27;
   margin: 20px; 
   padding: 30px;
-  box-shadow: 0 0 0 10px #f00;
-  outline: 20px #f00;
-  border-radius: 50px;
-  transition: all .2s ease;
-  &:hover {
-      box-shadow: 0 0 0 10px #f00, inset 0 0 10px 1px #f00;
-      color: #f00;
+  @include inactive;
+  &:hover, &:active {
+    @include active;
   }
 }
 
 .trans button {
-  background-color: #000000;
-  box-shadow: 0 0 0 0 #f00;
-  padding: 20px;
-  &:hover {
-      box-shadow: 0 0 0 0 #000;
-      color: #f00;
+  padding: 10px;
+  @include inactive;
+  &:hover, &:active {
+      @include active;
   }
+}
+
+.art {
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow);
 }
 
 circular-progress {
   background-color: #600;
-  color: #f00;
-  margin: 8px;
+  color: $secondary;
+  margin: 3px;
 
-}
-
-.bg progress {
-  background-color: #f00;
-  margin: 40px;
-  margin-bottom: 30px;
-  border-radius: 40px;
-  padding: 10px;
-  box-shadow: 0 0 10px 1px #f00;
 }
 
 .big {
-  font-size: 240;
-}
-.smol {
-  color: #f00;
-  font-size: 36;
-  padding: 40px;
+  font-size: 180;
+  font-family: '0xProto Nerd Font Mono';
 }
 
+.smol {
+  color: $secondary;
+  font-size: 31;
+  text-shadow: 0 0 10px rgba($secondary, $glow);
+  padding: 12px 48px;
+  margin: 40px;
+}
+
+.bar {
+  color: $secondary;
+
+  text-shadow: 0 0 10px rgba($secondary, $glow);
+  font-family: '0xProto Nerd Font Mono';
+}
+
+.file,
+.app {
+  margin: 20px;
+  padding: 4px 10px;
+  font-family: 'Soilad','0xProto Nerd Font Mono';
+  font-size: 40px;
+  @include inactive;
+  &:hover, &:first-child {
+    @include active;
+  }
+  &:hover{
+    &:first-child {
+      @include inactive;
+    }
+  }
+}
+
+.searchbar {
+  box-shadow: 0 0 1px 1px $secondary, 0 0 10px 1px $tertiary-dark;
+  padding: 20px 40px;
+  border-radius: 100px;
+}
+
+.notif, .wifilist {
+  font-size: 18;
+  margin: 20px; 
+  padding: 10px 5px; 
+  @include unglow;
+  &:hover {
+    @include glow;
+  }
+}

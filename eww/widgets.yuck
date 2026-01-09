@@ -1,0 +1,106 @@
+(include "./consts.yuck")
+
+(defwidget audio-visualiser [cava-width width]
+        (label :class "bar" :text {replace(replace(replace(replace(replace(replace(replace(replace(replace(substring(
+                                                                                                                     replace(cava, ';', ''),
+                                                                                                                     (cava-width - width)/2, width
+                                  ), '0', '‏‏‎ ‎'), '1', '▁'), '2', '▂'), '3', '▃'), '4', '▄'), '5', '▅'), '6', '▆'), '7', '▇'), '8', '█')})
+)
+
+(defwidget cover-art [height]
+        (image :image-height {height} :path {replace(playerctl.artUrl, 'file://', '')})
+)
+
+(defwidget panel [?spacing width]
+  (box :orientation "v"
+     :space-evenly false
+    (box :class "panel"
+        :space-evenly false
+        :spacing spacing
+        :width width
+        (children)
+    )
+  )
+)
+
+(defwidget controls [?class]
+    (box :space-evenly true
+      :spacing player-button-spacing
+      :class class
+      :orientation "horizontal"
+      (button 
+        :onclick "playerctl previous"
+        "󰒮")
+      (button 
+        :onclick "playerctl play-pause"
+        {playerctl.status == "Paused" ? "󰐊" : "󰏤"})
+      (button 
+        :onclick "playerctl next"
+        "󰒭")
+    )
+)
+
+(defwidget vibin [text cap ?class]
+            (label :class {class} :text {strlength(text) > cap ? substring(text, round((sin(playerctl.position/1000000) + 1 )/ 2 * (strlength(text) - cap), 0) , cap ) : text})
+)
+
+(defwidget bar-icon [?onscrollup ?onscrolldown onclick icon value]
+  (eventbox
+    :onscroll "if [ '{}' == 'up' ]; then ${onscrollup}; else ${onscrolldown}; fi"
+    :onclick onclick
+    (button :class "topbar"
+      (circular-progress
+             :start-at 25
+             :value value
+             :thickness {circular-thickness}
+      (label :text icon :xalign 0.5)
+      )
+    )
+  )
+)
+
+(defwidget app-entry [app icon name ?count]
+  (button :class "app" 
+    :onclick "python scripts/db.py '${name}' && ${app} & eww close search" 
+    :onmiddleclick "python scripts/db.py '${name}' && ${app} & eww close search" 
+    (box :space-evenly: false 
+         (image :icon-size "dialog" :icon "${icon}") 
+         "${name}"
+         ; "${count}"
+    )
+  )
+)
+
+(defwidget file-entry [file icon name]
+  (button :space-evenly false
+          :width 300
+          :hexpand false
+          :class "file"
+          :onclick "nautilus '${file}' & eww close search" 
+          :onmiddleclick "nautilus '${file}' &"
+          :onrightclick "displayfiles '${file}' &"
+          "${icon} ${name}"
+  )
+)
+
+(defwidget display-files [directory]
+  (box :space-evenly false
+       :orientation "v"
+    (scroll :height 150 
+      (label :class "smol" :text directory)
+    )
+    (children)
+  )
+)
+
+(defwidget progress-bar []
+  (overlay 
+    :class "timeline"
+    (progress :value {playerctl.position/playerctl.length*105 }
+    )
+    (scale :value {playerctl.position/1000000}
+           :max {playerctl.length/1000000}
+           :onchange "playerctl position {}"
+    )
+  )
+)

@@ -1,0 +1,317 @@
+(defpoll activewindow :interval "0s" `hyprctl activewindow -j`)
+(defpoll activeworkspace :interval "0s" `hyprctl activeworkspace -j`)
+(defpoll volume :interval "0s" `amixer -D pulse sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'`)
+(defpoll mic :interval "0s" `amixer -D pulse sget Capture | awk -F '[^0-9]+' '/Left:/{print $3}'`)
+(defpoll weather :interval "3h" `scripts/weather.sh`)
+(defpoll playerctl :interval "0s" `playerctl metadata --format '{ "artist": "{{ artist }}", "title": "{{ title }}", "position": {{ position }}, "length": {{ mpris:length }}, "artUrl": "{{ mpris:artUrl }}", "status": "{{ status }}" }'`)
+(defpoll notes :interval "10s" `cat ~/Documents/Obsidian-Vault/todo.md`)
+
+(deflisten wifilist :interval "0s" `wifilist`)
+
+(defvar user "soi")
+(defvar pc "wowbigredsquarething")
+(defvar cava-width 70)
+
+(deflisten cava :interval "0s" `bash ~/.config/eww/scripts/cava.sh 70`)
+
+(defvar height 64)
+(defvar power-spacing 10)
+(defvar side-spacing 10)
+(defvar search-spacing 20)
+(defvar cap 48)
+(defvar circular-thickness 4)
+(defvar player-button-spacing 15)
+(defvar player-text-spacing 5)
+(defvar weather-spacing 100)
+
+(defvar display `
+(display-files :directory "/home/soi/" (scroll :height 500 :vscroll true :class "notes"(label :text "
+/home/soi/.bash_logout
+/home/soi/.bash_profile
+/home/soi/.config
+/home/soi/.firedragon
+/home/soi/.icons
+/home/soi/.local
+/home/soi/.Xresources
+/home/soi/.bashrc_cat
+/home/soi/.dircolors
+/home/soi/.zshrc
+/home/soi/Desktop
+/home/soi/Downloads
+/home/soi/Templates
+/home/soi/Public
+/home/soi/Documents
+/home/soi/Music
+/home/soi/Pictures
+/home/soi/Videos
+/home/soi/.cache
+/home/soi/.pki
+/home/soi/.steam
+/home/soi/.pulse-cookie
+/home/soi/0
+/home/soi/2025-03-26 17-25-19.mkv
+/home/soi/2025-03-26 17-36-24.mkv
+/home/soi/2025-03-26 17-37-16.mkv
+/home/soi/2025-04-24 23-48-39.mkv
+/home/soi/2025-04-25 00-14-07.mkv
+/home/soi/2025-04-29 22-26-35.mkv
+/home/soi/2025-04-29 22-26-39.mkv
+/home/soi/2025-05-03 21-23-37.mkv
+/home/soi/2025-05-03 22-02-39.mkv
+/home/soi/2025-05-03 23-00-01.mkv
+/home/soi/2025-06-20 10-23-55.mkv
+/home/soi/2025-06-27 19-56-32.mkv
+/home/soi/2025-07-06 22-01-12.mkv
+/home/soi/2025-07-31 14-35-54.mkv
+/home/soi/a.py
+/home/soi/Android
+/home/soi/.Spotlight-V100
+/home/soi/Course1
+/home/soi/ascee.py
+/home/soi/asdas.txt
+/home/soi/bad-doom-clone
+/home/soi/bang.png
+/home/soi/bang.webp
+/home/soi/basic.conf
+/home/soi/blackjesus2.mov
+/home/soi/blackjesus2.mp4
+/home/soi/build
+/home/soi/build-ubuntu-23.sh
+/home/soi/cmake-3.29.2-linux-x86_64
+/home/soi/pendrive
+/home/soi/config.yaml
+/home/soi/cover.png
+/home/soi/cover.webp
+/home/soi/data.win
+/home/soi/dlib-18.17.100
+/home/soi/dmesg_boot
+/home/soi/.themes
+/home/soi/v0.40.0
+/home/soi/live
+/home/soi/.TemporaryItems
+/home/soi/obs-studio
+/home/soi/inochi-creator
+/home/soi/opt
+/home/soi/snap
+/home/soi/__pycache__
+/home/soi/pdx-tools
+/home/soi/plugins
+/home/soi/logs
+/home/soi/eu4-history-explorer
+/home/soi/hoi4 font
+/home/soi/vscode-userdata_
+/home/soi/._Course1
+/home/soi/undefined.bak
+/home/soi/os_
+/home/soi/outpy.avi
+/home/soi/s
+/home/soi/t
+/home/soi/pyt
+/home/soi/trongle.png
+/home/soi/pactlnowait.bash
+/home/soi/toggle.sh
+/home/soi/q
+/home/soi/webui.sh
+/home/soi/shawarma.yml
+/home/soi/rpcs3-v0.0.31-16347-40eda1b9_linux64.AppImage
+/home/soi/song.txt
+/home/soi/wifi.py
+/home/soi/soi.inx
+/home/soi/q.txt
+/home/soi/Soilad.sfd
+/home/soi/final.mp3
+/home/soi/pw-output-bin.sh
+/home/soi/pw-output.sh
+/home/soi/nohup.out
+/home/soi/main.py
+/home/soi/get-pip.py
+/home/soi/trongle.webp
+/home/soi/Soilad.otf
+/home/soi/NavBharati.otf
+/home/soi/nul
+/home/soi/uhhh.txt
+/home/soi/octoprint_deploy_diagnostic.log
+/home/soi/octoprint_deploy.log
+/home/soi/.bash_history
+/home/soi/.vim
+/home/soi/.vscode-oss
+/home/soi/Games
+/home/soi/Bharat1704_04_28.eu4
+/home/soi/india time.eu4
+/home/soi/.cargo
+/home/soi/actions-for-nautilus
+/home/soi/.wget-hsts
+/home/soi/2025-09-29 04-10-54.mp4
+/home/soi/davincibox
+/home/soi/nautilus-raw-thumbnails
+/home/soi/.paradoxlauncher
+/home/soi/davinci-resolve
+/home/soi/davinci-resolve-checker
+/home/soi/.var
+/home/soi/eq.txt
+/home/soi/2025-10-02 21-33-11.mp4
+/home/soi/2025-10-02 23-43-59.mp4
+/home/soi/.renpy
+/home/soi/2025-10-03 20-45-12.mp4
+/home/soi/2025-10-03 23-04-51.mp4
+/home/soi/2025-10-04 05-05-29.mp4
+/home/soi/numix-gtk-theme
+/home/soi/Orchis-theme
+/home/soi/.gtkrc-2.0
+/home/soi/2025-10-04 21-23-13.mp4
+/home/soi/2025-10-06 03-01-25.mp4
+/home/soi/Rust
+/home/soi/AMOLED-Serenity
+/home/soi/sed
+/home/soi/notes.txt
+/home/soi/2025-10-06 21-55-00.mp4
+/home/soi/go
+/home/soi/.android
+/home/soi/2025-10-12 01-51-04.mp4
+/home/soi/2025-10-12 02-00-35.mp4
+/home/soi/.gitconfig
+/home/soi/2025-10-18 00-36-55.mp4
+/home/soi/2025-10-19 22-00-27.mp4
+/home/soi/2025-10-20 22-14-50.mp4
+/home/soi/2025-10-21 00-09-32.mp4
+/home/soi/joycond
+/home/soi/joycond-cemuhook
+/home/soi/.profile
+/home/soi/.lunarclient
+/home/soi/.minecraft
+/home/soi/.java
+/home/soi/.openjfx
+/home/soi/.discord-rpc
+/home/soi/2025-10-22 22-07-22.mp4
+/home/soi/holy-c
+/home/soi/holyc-lang
+/home/soi/2025-10-24 00-37-25.mp4
+/home/soi/2025-10-24 01-52-00.mp4
+/home/soi/2025-10-31 17-54-38.mp4
+/home/soi/forge-1.20.1-47.1.106-installer.jar.log
+/home/soi/2025-11-01 02-24-32.mp4
+/home/soi/multimc-pkgbuild
+/home/soi/waveform
+/home/soi/goo-engine
+/home/soi/build_linux
+/home/soi/.e4mc_cache
+/home/soi/Daft Punk - Technologic (Acapella) [sntnltc2nMY].mp3
+/home/soi/Genesis [pf7uueiK8ec].mp3
+/home/soi/System Blower [fT8DWWhEMe0].mp3
+/home/soi/Rasputin [5Z0dxsFmX7c].mp3
+/home/soi/.audacity-data
+/home/soi/Theme for Scanty & Knee Socks [ZCut2rFo1bk].mp3
+/home/soi/Top_5_Metal_Pipe_Falling.mp3
+/home/soi/.gradle
+/home/soi/.subversion
+/home/soi/lib
+/home/soi/.python_history
+/home/soi/.npm
+/home/soi/.node_repl_history
+/home/soi/spicegui
+/home/soi/Mr. Kitty - After Dark (acapella⧸vocals only) [g3j9w7gTN8g].mp3
+/home/soi/Mr.Kitty - After Dark (Instrumental) [uuHJnATTQPA].mp3
+/home/soi/MGMT - Little Dark Age (Instrumental) [HF_RnZoZmnU].mp3
+/home/soi/Little Dark Age - Vocals Only (Acapella) ｜ MGMT [z2YUUzmmypM].mp3
+/home/soi/underscores - Spoiled little brat (Official Instrumental) [b83G6_rpXZA].mp3
+/home/soi/Jane remover - Dancing with your eyes closed (HQ Instrumental) [JQHUYz15HhQ].mp3
+/home/soi/Mario Judah - Miss The Rage (DIY Acapella) [bq_QsQIp_lE].mp3
+/home/soi/Jane Remover - movies for guys (Acapella) [gWz8PXpafQQ].mp3
+/home/soi/SEMATARY - SLAUGHTER HOUSE (ACAPELLA) [tpTGzVSdaAU].mp3
+/home/soi/underscores - Your favorite sidekick (HQ acapella) [jF0BOdCop7A].mp3
+/home/soi/node_modules
+/home/soi/package.json
+/home/soi/package-lock.json
+/home/soi/KEYGEN CHURCH - UltraChurch (ULTRAKILL - CYBER GRIND Soundtrack) [KTCC053fLqs].mp3
+/home/soi/Justice - Stress - † (Official Audio) [0qXmxVySMzw].mp3
+/home/soi/Ring a Bell Instrumental [dbYvwxfMQ08].mp3
+/home/soi/Death Grips - Ring a Bell (Vocals Only) [oYjPo83HZ2g].mp3
+/home/soi/JPEGMAFIA - vulgar display of power (Official Instrumental) [7EiI8iUqxLk].mp3
+/home/soi/JPEGMAFIA - vulgar display of power (396Hz) [785aE8qJ_Gs].mp3
+/home/soi/Real Nega (Acapella) [kk7mcLTcv2U].mp3
+/home/soi/KEYGEN CHURCH - Tenebre Rosso Sangue (ULTRAKILL Soundtrack) [L5q4uYj-gyg].mp3
+/home/soi/JPEGMAFIA - Real Nega [xIW-L39oqpQ].mp3
+/home/soi/clipping. - Body & Blood (Acapella) [o17vcOXtH0s].mp3
+/home/soi/clipping. - Body & Blood [3ZAPtFRpuu8].mp3
+/home/soi/2025-11-30 21-12-59.mp4
+/home/soi/test.sh
+/home/soi/.zen
+/home/soi/.mozilla
+/home/soi/.tarball-installations
+/home/soi/tmp.FW55U1t5nm
+/home/soi/chromedriver
+/home/soi/.bashrc
+/home/soi/.cursor
+/home/soi/.zcompdump
+/home/soi/.zhistory
+/home/soi/chat.db
+/home/soi/.steampath
+/home/soi/.steampid
+/home/soi/.sqlite_history")))
+`)
+(defvar files `
+(scroll :height 600 :hscroll false :vscroll true 
+        (box :class "container" :orientation "vertical" 
+        (file-entry :file "/home/" :icon "" :name "home")
+        (file-entry :file "/home/soi" :icon "" :name "soi")
+        (file-entry :file "/home/soi/.bash_logout" :icon "" :name ".bash_logout")
+        (file-entry :file "/home/soi/.bash_profile" :icon "" :name ".bash_profile")
+        (file-entry :file "/home/soi/.config" :icon "" :name ".config")
+        (file-entry :file "/home/soi/.config/Kvantum" :icon "" :name "Kvantum")
+        (file-entry :file "/home/soi/.config/Kvantum/Sweet" :icon "" :name "Sweet")
+        (file-entry :file "/home/soi/.config/Kvantum/Sweet/Sweet.kvconfig" :icon "" :name "Sweet.kvconfig")
+        (file-entry :file "/home/soi/.config/Kvantum/Sweet/Sweet.svg" :icon "󰜡" :name "Sweet.svg")
+        (file-entry :file "/home/soi/.config/Kvantum/DeepinV20-dark" :icon "" :name "DeepinV20-dark")
+        (file-entry :file "/home/soi/.config/Kvantum/DeepinV20-dark/DeepinV20-dark.kvconfig" :icon "" :name "DeepinV20-dark.kvconfig")
+        (file-entry :file "/home/soi/.config/Kvantum/DeepinV20-dark/DeepinV20-dark.svg" :icon "󰜡" :name "DeepinV20-dark.svg")
+        (file-entry :file "/home/soi/.config/Kvantum/kvantum.kvconfig" :icon "" :name "kvantum.kvconfig")
+        (file-entry :file "/home/soi/.config/alacritty" :icon "" :name "alacritty")
+        (file-entry :file "/home/soi/.config/alacritty/alacritty.toml" :icon "" :name "alacritty.toml")
+        (file-entry :file "/home/soi/.config/autostart" :icon "" :name "autostart")
+        (file-entry :file "/home/soi/.config/autostart/org.kde.latte-dock.desktop" :icon "" :name "org.kde.latte-dock.desktop")
+        (file-entry :file "/home/soi/.config/autostart/variety.desktop" :icon "" :name "variety.desktop")
+        (file-entry :file "/home/soi/.config/autostart/komorebi.desktop" :icon "" :name "komorebi.desktop")
+        (file-entry :file "/home/soi/.config/autostart/RiseupVPN.desktop" :icon "" :name "RiseupVPN.desktop")
+        (file-entry :file "/home/soi/.config/autostart/lunarclient.desktop" :icon "" :name "lunarclient.desktop")
+        (file-entry :file "/home/soi/.config/bleachbit" :icon "" :name "bleachbit")
+        (file-entry :file "/home/soi/.config/bleachbit/bleachbit.ini" :icon "" :name "bleachbit.ini")
+        (file-entry :file "/home/soi/.config/btop" :icon "" :name "btop")
+        (file-entry :file "/home/soi/.config/btop/themes" :icon "" :name "themes")
+        (file-entry :file "/home/soi/.config/btop/themes/catppuccin_mocha.theme" :icon "" :name "catppuccin_mocha.theme")
+        (file-entry :file "/home/soi/.config/btop/btop.conf" :icon "" :name "btop.conf")
+        (file-entry :file "/home/soi/.config/cava" :icon "" :name "cava")
+        (file-entry :file "/home/soi/.config/cava/config" :icon "" :name "config")
+        (file-entry :file "/home/soi/.config/cava/shaders" :icon "" :name "shaders")
+        (file-entry :file "/home/soi/.config/cava/shaders/northern_lights.frag" :icon "" :name "northern_lights.frag")
+        (file-entry :file "/home/soi/.config/cava/shaders/pass_through.vert" :icon "" :name "pass_through.vert")
+        (file-entry :file "/home/soi/.config/cava/shaders/bar_spectrum.frag" :icon "" :name "bar_spectrum.frag")
+        (file-entry :file "/home/soi/.config/cava/shaders/winamp_line_style_spectrum.frag" :icon "" :name "winamp_line_style_spectrum.frag")
+        (file-entry :file "/home/soi/.config/cava/shaders/spectrogram.frag" :icon "" :name "spectrogram.frag")
+        (file-entry :file "/home/soi/.config/cava/shaders/eye_of_phi.frag" :icon "" :name "eye_of_phi.frag")
+        (file-entry :file "/home/soi/.config/cava/themes" :icon "" :name "themes")
+        (file-entry :file "/home/soi/.config/cava/themes/solarized_dark" :icon "" :name "solarized_dark")
+        (file-entry :file "/home/soi/.config/cava/themes/tricolor" :icon "" :name "tricolor")
+        (file-entry :file "/home/soi/.config/deluge" :icon "" :name "deluge")
+        (file-entry :file "/home/soi/.config/deluge/gtk3ui_state" :icon "" :name "gtk3ui_state")
+        (file-entry :file "/home/soi/.config/deluge/gtk3ui_state/torrentview.state" :icon "" :name "torrentview.state")
+        (file-entry :file "/home/soi/.config/deluge/ipc" :icon "" :name "ipc")
+        (file-entry :file "/home/soi/.config/deluge/ipc/deluge-gtk.lock" :icon "" :name "deluge-gtk.lock")
+        (file-entry :file "/home/soi/.config/deluge/ipc/deluge-gtk" :icon "" :name "deluge-gtk")
+        (file-entry :file "/home/soi/.config/deluge/icons" :icon "" :name "icons")
+        (file-entry :file "/home/soi/.config/deluge/icons/opentrackr.org.png" :icon "" :name "opentrackr.org.png")
+        (file-entry :file "/home/soi/.config/deluge/plugins" :icon "" :name "plugins")
+        (file-entry :file "/home/soi/.config/deluge/auth" :icon "" :name "auth")
+        (file-entry :file "/home/soi/.config/deluge/hostlist.conf" :icon "" :name "hostlist.conf")))
+`)
+(defvar apps `
+(box :class "container" :space-evenly false :orientation "horizontal" 
+        (app-entry :app "nautilus --new-window %U" :icon "org.gnome.Nautilus" :name "Files" :count "11")
+        (app-entry :app "chromium --profile-directory=Default --app-id=agimnkijcaahngcdmfeangaknmldooml" :icon "chrome-agimnkijcaahngcdmfeangaknmldooml-Default" :name "YouTube" :count "6")
+        (app-entry :app "/usr/bin/steam %U" :icon "steam" :name "Steam" :count "4")
+        (app-entry :app "/usr/bin/discord" :icon "discord" :name "Discord" :count "2")
+)
+`)
+(defvar firstapp `kitty &`)
+
+(deflisten notifs :initial ""
+  `python ~/.config/eww/scripts/notifs.py`)
