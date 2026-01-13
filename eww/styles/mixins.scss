@@ -1,0 +1,43 @@
+
+
+@mixin inactive {
+  box-shadow:
+    0 0 10px rgba($tertiary-dark, 0),
+    0 0 10px rgba($tertiary-light, 0),
+    0 0 10px rgba($tertiary, 0);
+  background-color: rgba($tertiary, 0);
+  border-radius: 100px;
+  label {
+    color: $primary;
+    // text-shadow: 0 0 10px rgba($secondary, 0);
+  }
+}
+
+@mixin active {
+  // border-radius: 64px;
+  box-shadow:
+    $raised $raised 10px rgba($tertiary-dark, $opacity),
+    (-$raised) (-$raised) 10px rgba($tertiary-light, $opacity),
+    0 0 10px rgba($tertiary, $opacity);
+  background-color: rgba($tertiary, $opacity);
+  label {
+    color: $secondary;
+    text-shadow: 0 0 10px rgba($secondary, $glow);
+  }
+}
+
+@mixin unglow {
+  background-color: rgba($tertiary, $opacity);
+  box-shadow: 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow),0 0 10px 1px rgba($tertiary-dark,0.4);
+  border-radius: 100px;
+}
+
+@mixin glow($brightness: $glow) {
+      // background-color: #300;
+      box-shadow: inset 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $brightness);
+      // box-shadow: 4px 4px 4px 2px rgba($tertiary-dark,$opacity), -4px -4px 4px 2px rgba($tertiary-light,$opacity);
+      background-color: rgba($tertiary,$opacity);
+      label {color: $secondary;}
+      text-shadow: 0 0 10px rgba($secondary, $brightness);
+      border-radius: 32px;
+}

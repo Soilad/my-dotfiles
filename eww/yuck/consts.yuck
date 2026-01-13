@@ -1,15 +1,18 @@
-(defpoll activewindow :interval "0s" `hyprctl activewindow -j`)
-(defpoll activeworkspace :interval "0s" `hyprctl activeworkspace -j`)
+(defpoll activewindow :interval "2s" `hyprctl activewindow -j`)
+; (deflisten notifs :initial "" `python ~/.config/eww/scripts/notifs.py`)
+(defpoll activeworkspace :interval "2s" `hyprctl activeworkspace -j`)
+(defpoll weather :interval "3h" `scripts/weather.sh`)
+(defpoll notes :interval "10s" `cat ~/Documents/Obsidian-Vault/todo.md`)
+(defpoll playerctl :interval "0s" `playerctl metadata -f '{ "artist": "{{ artist }}", "title": "{{ title }}", "position": {{ position }}, "length": {{ mpris:length }}, "artUrl": "{{ mpris:artUrl }}", "status": "{{ status }}" }' 2>/dev/null | jq -s 'if length == 0 then {"status": "Stopped"} else .[0] end'`)
 (defpoll volume :interval "0s" `amixer -D pulse sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'`)
 (defpoll mic :interval "0s" `amixer -D pulse sget Capture | awk -F '[^0-9]+' '/Left:/{print $3}'`)
-(defpoll weather :interval "3h" `scripts/weather.sh`)
-(defpoll playerctl :interval "0s" `playerctl metadata --format '{ "artist": "{{ artist }}", "title": "{{ title }}", "position": {{ position }}, "length": {{ mpris:length }}, "artUrl": "{{ mpris:artUrl }}", "status": "{{ status }}" }'`)
-(defpoll notes :interval "10s" `cat ~/Documents/Obsidian-Vault/todo.md`)
-
+     
 (deflisten wifilist :interval "0s" `wifilist`)
-
+     
 (defvar user "soi")
 (defvar pc "wowbigredsquarething")
+(defvar time-or-date '%I:%M %p')
+(defvar glow-value 0.5)
 (defvar cava-width 70)
 
 (deflisten cava :interval "0s" `bash ~/.config/eww/scripts/cava.sh 70`)
@@ -305,13 +308,11 @@
 `)
 (defvar apps `
 (box :class "container" :space-evenly false :orientation "horizontal" 
-        (app-entry :app "nautilus --new-window %U" :icon "org.gnome.Nautilus" :name "Files" :count "11")
-        (app-entry :app "chromium --profile-directory=Default --app-id=agimnkijcaahngcdmfeangaknmldooml" :icon "chrome-agimnkijcaahngcdmfeangaknmldooml-Default" :name "YouTube" :count "6")
-        (app-entry :app "/usr/bin/steam %U" :icon "steam" :name "Steam" :count "4")
-        (app-entry :app "/usr/bin/discord" :icon "discord" :name "Discord" :count "2")
-)
+	(app-entry :app "nautilus --new-window %U" :icon "org.gnome.Nautilus" :name "Files" :count "14")
+	(app-entry :app "chromium --profile-directory=Default --app-id=cinhimbnkkaeohfgghhklpknlkffjgod" :icon "chrome-cinhimbnkkaeohfgghhklpknlkffjgod-Default" :name "YouTube Music" :count "10")
+	(app-entry :app "/usr/bin/discord" :icon "discord" :name "Discord" :count "8")
+	(app-entry :app "chromium --profile-directory=Default --app-id=agimnkijcaahngcdmfeangaknmldooml" :icon "chrome-agimnkijcaahngcdmfeangaknmldooml-Default" :name "YouTube" :count "8")
+	(app-entry :app "/usr/bin/steam %U" :icon "steam" :name "Steam" :count "5"))
 `)
 (defvar firstapp `kitty &`)
 
-(deflisten notifs :initial ""
-  `python ~/.config/eww/scripts/notifs.py`)

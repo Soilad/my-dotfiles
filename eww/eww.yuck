@@ -1,30 +1,18 @@
-(include "./widgets.yuck")
-
-(defwindow notiflist
-  :monitor 0 ;; Optional for X11
-  :stacking "fg"
-  :windowtype "dock"
-  :wm-ignore true
-  :geometry (geometry
-              :x "-10px"
-              :y "-10px"
-              :width "10%"
-              :height "0%"
-              :anchor "top left")
-  (literal :content notifs))
+(include "./yuck/widgets.yuck")
+(include "./yuck/end.yuck")
 
 (defwindow status
   :monitor 0 ;; Optional for X11
   :stacking "fg"
-  :exclusive true
+  :exclusive false
   :windowtype "dock"
   :wm-ignore true
   :geometry (geometry
-              :x "100px"
+              :x "0px"
               :y "0px"
               :width "67%"
               :height "50%"
-              :anchor "center center")
+              :anchor "top center")
   (powermenu)
 )
 
@@ -44,6 +32,8 @@
               :anchor "center center")
   (box :space-evenly true
     :orientation "h"
+
+
     (box :space-evenly false
       :spacing search-spacing
       :class "bg"
@@ -55,6 +45,13 @@
       (audio-visualiser :cava-width cava-width :width 70)
       (literal :content apps)
       (box :orientation "h"
+        (button
+          :class "notes"
+          :onclick `kitty nvim ~/Documents/Obsidian-Vault/todo.md | eww close status`
+          (label 
+            :markup {notes}
+          )
+        )
         (literal :content files)
         (literal :content display)
         ; (image :icon "nvim" :icon-size "dialog")
@@ -91,7 +88,7 @@
               :height "40px"
               :anchor "top center")
   (centerbox
-    (buttons)
+    (left)
     (box
       :space-evenly false
       :spacing 20
@@ -102,30 +99,31 @@
         "${weather.feels_like}"
       )
       (panel :width 10
-        {formattime(EWW_TIME, "%eth %B %Y")}
+        '🌬️ ${weather.wind} 💧${weather.humidity}'
       )
       (time-text)
       (panel
         :width 40
         :spacing 10
         (overlay       
-          (audio-visualiser :cava-width cava-width :width 10 )
+          "‏‏‎                            ‎"
+          (audio-visualiser :cava-width cava-width :width 12 )
           (box
             :width 150
-            (cover-art :height 32)
+            (cover-art :height 36)
             (controls :class "controls")
           )
         )
       )
       (panel :width 10
         (overlay
-          "‏‏‎                                          ‎"
-          (vibin :text "${playerctl.artist}: ${playerctl.title}" :cap 40)
+          "‏‏‎                                                 ‎"
           (progress-bar)
+          (vibin :class "player" :text { playerctl.status == "Stopped" ? "" : "${playerctl.artist}: ${playerctl.title}"} :cap 25)
         )
       )
     )
-    (stats)
+    (right)
   )
 )
 
@@ -149,14 +147,15 @@
   )
 )
 
-(defwidget time-text[]
+(defwidget time-text []
   (box :space-evenly false
     (image :image-height height
         :path "/home/${user}/.config/eww/sprites/right.svg")
     (box :space-evenly false
       :class "timey topbar"  
-      (button  
-        (label :class "timey":text {formattime(EWW_TIME, "%I:%M %p")})
+      (eventbox
+        :onclick "eww open status --toggle && eww update time-or-date='%I:%M %p'"
+        (label :class "timey" :text {formattime(EWW_TIME, time-or-date)})
       )
     )
     (image :image-height height
@@ -164,31 +163,30 @@
   )
 )
 
-(defwidget buttons []
+(defwidget left []
   (box :space-evenly false
         :spacing 0
   (box :space-evenly false
     :class "topbar lefty"
   (bar-icon :onscrollup "hyprctl dispatch workspace +1"
-            ; :onscrolldown "hyprctl dispatch workspace -1"
-            :onscrolldown "notify-send 'a'"
+            :onscrolldown "hyprctl dispatch workspace -1"
             :onclick "eww open status --toggle"
-            :icon "󰐥"
+            :icon "☬"
             :value {activeworkspace.id*10}
   )
-  (bar-icon :onclick "eww open search --toggle"
+  (bar-icon :onclick "eww open notification-frame --toggle"
             :icon "☭"
             :value {activeworkspace.windows*10}
   )
 
-  (label :xalign 0 :text {activewindow.initialTitle})
+  (label :limit-width 50 :xalign 0 :text {activewindow.title ?: "YuchiruOS"})
   )
   (image :image-height height
       :path "/home/soi/.config/eww/sprites/left.svg")
   )
 )
 
-(defwidget stats []
+(defwidget right []
   (box :space-evenly false
         :spacing 0
         :halign "end"
@@ -196,11 +194,11 @@
       :path "/home/${user}/.config/eww/sprites/right.svg")
   (box :space-evenly false
     :class "topbar righty"
-      (bar-icon :onclick "kitty htop &"
+      (bar-icon :onclick "kitty btop --force-utf &"
                 :icon ""
-                :value {EWW_CPU["avg"]/6}
+                :value {EWW_CPU["avg"]}
       )
-      (bar-icon :onclick "kitty htop &"
+      (bar-icon :onclick "kitty btop --force-utf &"
                 :icon ""
                 :value {EWW_RAM["used_mem_perc"]}
       )
@@ -230,84 +228,27 @@
     :valign "center"
     :orientation "h"
     (box :space-evenly false
-      :spacing side-spacing
-      :class "bg"
-      :orientation "v"
-      (button
-        :class "notes"
-        :onclick `kitty nvim ~/Documents/Obsidian-Vault/todo.md | eww close status`
-        (label 
-          :markup {notes}
-        )
-      )
-    )
-    (box :space-evenly false
          :orientation "v"
       (box :space-evenly false
-           :orientation "h"
-        (box :space-evenly false
-             :class "bg"
-             :orientation "v"
-          (label :class "smol" :text {formattime(EWW_TIME, "%eth %B %Y")})
-          (calendar)
-        )
-        (box :space-evenly false
-            :spacing weather-spacing
-            :class "bg"
-            :width 810
-            :orientation "v"
-          (label :class "smol" :text "〠 the sun smiles with eternal malice")
-          (box :space-evenly true
-            :orientation "h"
-            (label :class "big" 
-                   :text "${weather.icon}")
-            (box :space-evenly false
-                  :orientation "v"
-                  "${weather.description}"
-                  "${weather.temperature}"
-                  "${weather.wind}"
-                  "${weather.humidity}"
-            )
-          )
-        )
+           :class "bg"
+           :orientation "v"
+        (calendar)
       )
-        
       (box :space-evenly false
-           :orientation "h"
-           :spacing power-spacing
-          (box :space-evenly false
-            :class "bg"
-            :spacing player-text-spacing
-            :orientation "v"
-
-            (vibin :text {playerctl.title} :cap cap)
-            (vibin :text {playerctl.artist} :cap cap)
-
-            (audio-visualiser :cava-width cava-width :width 40 )
-            (controls :class "trans")
-            (progress-bar)
-
-        )
+        :class "powermenu"
+        :spacing power-spacing
+        :orientation "v"
         (box :space-evenly false
-          :class "powermenu"
           :spacing power-spacing
-          :orientation "v"
-          (box :space-evenly false
-            :spacing power-spacing
-            :orientation "h"
-            (button :onclick "systemctl poweroff | eww open status --toggle"
-              "󰐥")
-            (button :onclick "systemctl reboot | eww open status --toggle"
-              "󰜉")
-          )
-          (box :space-evenly false
-            :spacing power-spacing
-            :orientation "h"
-            (button :onclick "loginctl terminate-session | eww open status --toggle"
-              "󰍃")
-            (button :onclick "systemctl suspend | eww open status --toggle"
-              "󰒲")
-          )
+          :orientation "h"
+          (button :onclick "shutdown now | eww open status --toggle"
+            "󰐥")
+          (button :onclick "reboot | eww open status --toggle"
+            "󰜉")
+          (button :onclick "loginctl terminate-session | eww open status --toggle"
+            "󰍃")
+          (button :onclick "suspend | eww open status --toggle"
+            "󰒲")
         )
       )
     )

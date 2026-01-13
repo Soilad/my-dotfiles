@@ -1,56 +1,8 @@
+@import 'styles/colors.scss';
+@import 'styles/end.scss';
+
 * { all: unset; 
-  transition: all .3s ease;
-}
-
-$opacity: 0.9;
-$glow: 0.65;
-$primary: #fff;
-$secondary: #f00;
-$tertiary: #080808;
-$tertiary-light: #171717;
-$tertiary-dark: #000000;
-$raised: 10px;
-
-@mixin inactive {
-  box-shadow:
-    0 0 10px rgba($tertiary-dark, 0),
-    0 0 10px rgba($tertiary-light, 0),
-    0 0 10px rgba($tertiary, 0);
-  background-color: rgba($tertiary, 0);
-  border-radius: 100px;
-  label {
-    color: $primary;
-    text-shadow: 0 0 10px rgba($secondary, 0);
-  }
-}
-
-@mixin active {
-  border-radius: 64px;
-  box-shadow:
-    $raised $raised 10px rgba($tertiary-dark, $opacity),
-    (-$raised) (-$raised) 10px rgba($tertiary-light, $opacity),
-    0 0 10px rgba($tertiary, $opacity);
-  background-color: rgba($tertiary, $opacity);
-  label {
-    color: $secondary;
-    text-shadow: 0 0 10px rgba($secondary, $glow);
-  }
-}
-
-@mixin unglow {
-  background-color: rgba($tertiary, $opacity);
-  box-shadow: 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow),0 0 10px 1px rgba($tertiary-dark,0.4);
-  border-radius: 100px;
-}
-
-@mixin glow {
-      // background-color: #300;
-      box-shadow: inset 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow);
-      // box-shadow: 4px 4px 4px 2px rgba($tertiary-dark,$opacity), -4px -4px 4px 2px rgba($tertiary-light,$opacity);
-      background-color: rgba($tertiary,$opacity);
-      label {color: $secondary;}
-      text-shadow: 0 0 10px rgba($secondary, $glow);
-      border-radius: 32px;
+  transition: box-shadow .2s ease,  color .2s ease, text-shadow .2s ease, border-radius .2s ease;
 }
 
 .lefty {
@@ -80,9 +32,7 @@ $raised: 10px;
 
 .panel {
   font-family: 'Soilad','0xProto Nerd Font Mono';
-  label {
-    text-shadow: 0 0 10px rgba($tertiary-dark, 1);
-  }
+
   padding: 10px 20px;
   margin: 5px 0;
   border-radius: 32px;
@@ -91,6 +41,11 @@ $raised: 10px;
   background-color: rgba($tertiary-dark, $opacity);
 
 }
+
+.player {
+  text-shadow: 0 0 5px $tertiary-dark;
+}
+
 .controls {
   button {
     &:hover {
@@ -99,16 +54,16 @@ $raised: 10px;
   }
   label {
     font-size: 27px;
-    text-shadow: 0 0 10px rgba($tertiary-dark, 1);
+    text-shadow: 0 0 10px $tertiary-dark;
   }
 }
 
 progress {
-  background-color: rgba($secondary, $opacity);
+  background-color: $secondary;
   border-radius: 10px;
-  // padding: 2px;
-  margin: 0 -5px 0 0;
-  box-shadow: 0 0 10px 1px $tertiary-dark;
+  padding: 2px;
+  margin: 0 -0px 10px 0;
+  box-shadow: 0 0 10px rgba($secondary, $glow);
 }
 slider {
   padding: 5px;
@@ -134,7 +89,7 @@ slider {
 .powermenu button, .bg {
   font-size: 36;
   margin: 20px; 
-  padding: 60px 75px;
+  padding: 50px 65px;
   @include unglow;
   &:hover {
     @include glow;
@@ -161,17 +116,10 @@ slider {
   }
 }
 
-.art {
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow);
-}
-
 circular-progress {
   background-color: #600;
   color: $secondary;
   margin: 3px;
-
 }
 
 .big {
@@ -188,13 +136,12 @@ circular-progress {
 }
 
 .bar {
-  color: $secondary;
-
-  text-shadow: 0 0 10px rgba($secondary, $glow);
+  color: rgba($tertiary-dark, 0);
+  // color: $secondary;
+  text-shadow: 0 0 5px $secondary;
   font-family: '0xProto Nerd Font Mono';
 }
 
-.file,
 .app {
   margin: 20px;
   padding: 4px 10px;
@@ -211,6 +158,18 @@ circular-progress {
   }
 }
 
+
+.file {
+  margin: 20px;
+  padding: 4px 10px;
+  font-family: 'Soilad','0xProto Nerd Font Mono';
+  font-size: 40px;
+  @include inactive;
+  &:hover {
+    @include active;
+  }
+}
+
 .searchbar {
   box-shadow: 0 0 1px 1px $secondary, 0 0 10px 1px $tertiary-dark;
   padding: 20px 40px;
@@ -220,7 +179,7 @@ circular-progress {
 .notif, .wifilist {
   font-size: 18;
   margin: 20px; 
-  padding: 10px 5px; 
+  padding: 10px; 
   @include unglow;
   &:hover {
     @include glow;

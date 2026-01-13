@@ -1,0 +1,104 @@
+@import 'colors.scss';
+@import 'mixins.scss';
+
+$bar_bg: #282c34;
+$bar_border: #3b4048;
+$hour_color: #3b4048;
+$reply_hover: #3b4048;
+
+.end-default-notification-box-low, .end-default-notification-box-normal {
+    margin: 10px;
+    padding: 20px;
+    @include unglow;
+    border-radius: 24px;
+}
+
+.end-default-notification-box-critical {
+    margin: 10px;
+    padding: 20px;
+    @include glow;
+}
+
+.end-default-notification-title-bar {
+    background-color: $bar_bg;
+    margin: 3px;
+    border-bottom: 1px solid $bar_border;
+}
+
+.end-default-notification-appicon {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.end-default-notification-appname {
+    color: $primary;
+    margin-right: 12px;
+    font-family: 'Soilad';
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.end-default-notification-body-box {
+    margin-top: 12px;
+}
+
+.notification-text {
+    color: $primary;
+    font-family: 'Soilad';
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.notification-content {
+    font-size: 1em;
+}
+
+.end-notification-button, .end-notification-reply {
+    margin-top: 12px;
+    padding: 10px;
+    @include inactive;
+    &:hover {
+        @include active;
+    }
+    // background-color: $bar_bg;
+    // color: $primary;
+    // padding: 8px;
+    // border-radius: 10px;
+    // margin-right: 12px;
+    // border: 1px solid $bar_border;
+}
+
+.end-history-frame {
+    background-color: $bar_bg;
+    padding: 12px;
+    padding-left: 8px;
+    border-radius: 10px;
+}
+
+.end-history-box {
+    @include unglow;
+}
+
+.end-history-appicon {
+    margin-right: 5px;
+    margin-bottom: 2px;
+}
+
+.end-history-appname {
+    color: $primary;
+    margin-right: 5px;
+    font-family: 'Soilad';
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.end-history-body-box {
+    margin-top: 3px;
+}
+
+.content-box {
+    margin-left: 12px;
+}
