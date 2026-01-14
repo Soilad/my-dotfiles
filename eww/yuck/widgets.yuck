@@ -1,14 +1,7 @@
 (include "./yuck/consts.yuck")
 
 (defwidget audio-visualiser [cava-width width]
-        (label :class "bar" :text {replace(replace(replace(replace(replace(replace(replace(replace(replace(substring(
-                                                                                                                     replace(cava, ';', ''),
-                                                                                                                     (cava-width - width)/2, width
-                                  ), '0', '‏‏‎ ‎'), '1', '▁'), '2', '▂'), '3', '▃'), '4', '▄'), '5', '▅'), '6', '▆'), '7', '▇'), '8', '█')})
-)
-
-(defwidget cover-art [height]
-        (image :image-height {height} :path {replace(playerctl.artUrl, 'file://', '')})
+        (label :class "bar" :text {replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(cava, ';', '')), '0', '‏‏‎ ‎'), '1', '▁'), '2', '▂'), '3', '▃'), '4', '▄'), '5', '▅'), '6', '▆'), '7', '▇'), '8', '█')})
 )
 
 (defwidget panel [?spacing width]
@@ -23,42 +16,18 @@
   )
 )
 
-(defwidget controls [?class]
-    (box :space-evenly true
-      :spacing player-button-spacing
-      
-      :orientation "horizontal"
-      (button 
-        :class class
-        :onclick "playerctl previous"
-        "󰒮")
-      (button 
-        :class class
-        :onclick "playerctl play-pause"
-        {playerctl.status == "Paused" ? "󰐊" : "󰏤"})
-      (button 
-        :class class
-        :onclick "playerctl next"
-        "󰒭")
-    )
-)
-
 (defwidget vibin [text cap ?class]
             (label :class {class} :text {strlength(text) > cap ? substring(text, round((sin(playerctl.position/1000000) + 1 )/2 * (strlength(text) - cap), 0) , cap ) : text})
 )
 
-(defwidget bar-icon [?onscrollup ?onscrolldown onclick icon value]
-  (eventbox
-    :onscroll "if [ '{}' == 'up' ]; then ${onscrollup}; else ${onscrolldown}; fi"
-    :onclick onclick
-    (button 
-            :class "topbar"
-      (circular-progress
-             :start-at 25
-             :value {value}
-             :thickness {circular-thickness}
-      (label :text icon :xalign 0.5)
-      )
+(defwidget bar-icon [?class onclick icon value]
+  (button 
+    :class class
+    (circular-progress
+           :start-at 25
+           :value {value}
+           :thickness {circular-thickness}
+    icon
     )
   )
 )
@@ -92,7 +61,7 @@
           :class "file"
           :onclick "nautilus '${file}' & eww close search" 
           :onmiddleclick "nautilus '${file}' &"
-          :onrightclick "displayfiles '${file}' &"
+          :onrightclick "~/.local/bin/displayfiles '${file}' &"
           "${icon} ${name}"
   )
 )
@@ -115,6 +84,18 @@
     (scale :value {playerctl.position/1000000}
            :max {playerctl.length/1000000}
            :onchange "playerctl position {}"
+    )
+  )
+)
+
+(defwidget volume-bar [?class value onchange]
+  (box 
+    :class {class}
+    (overlay 
+      (progress :value {value})
+      (scale :value {value}
+             :onchange {onchange}
+      )
     )
   )
 )

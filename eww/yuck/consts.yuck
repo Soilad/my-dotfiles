@@ -4,14 +4,14 @@
 (defpoll weather :interval "3h" `scripts/weather.sh`)
 (defpoll notes :interval "10s" `cat ~/Documents/Obsidian-Vault/todo.md`)
 (defpoll playerctl :interval "0s" `playerctl metadata -f '{ "artist": "{{ artist }}", "title": "{{ title }}", "position": {{ position }}, "length": {{ mpris:length }}, "artUrl": "{{ mpris:artUrl }}", "status": "{{ status }}" }' 2>/dev/null | jq -s 'if length == 0 then {"status": "Stopped"} else .[0] end'`)
-(defpoll volume :interval "0s" `amixer -D pulse sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'`)
-(defpoll mic :interval "0s" `amixer -D pulse sget Capture | awk -F '[^0-9]+' '/Left:/{print $3}'`)
+
+(defpoll speaker-volume :interval "0s" `amixer -D pulse sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'`)
+(defpoll mic-volume :interval "0s" `amixer -D pulse sget Capture | awk -F '[^0-9]+' '/Left:/{print $3}'`)
      
 (deflisten wifilist :interval "0s" `wifilist`)
      
 (defvar user "soi")
 (defvar pc "wowbigredsquarething")
-(defvar time-or-date '%I:%M %p')
 (defvar glow-value 0.5)
 (defvar cava-width 70)
 

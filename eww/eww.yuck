@@ -39,7 +39,7 @@
       :class "bg"
       :orientation "v"
       (input :class "searchbar" 
-           :onchange "search '{}' & searchfiles '{}' &"
+           :onchange "~/.local/bin/search '{}' & ~/.local/bin/searchfiles '{}' &"
            :onaccept firstapp
       )
       (audio-visualiser :cava-width cava-width :width 70)
@@ -76,6 +76,66 @@
   (literal :content wifilist)
 )
 
+(defwindow volume
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive true
+  :windowtype "dock"
+  :wm-ignore true
+  :geometry (geometry
+              :x "0px"
+              :y "10px"
+              :width "1%"
+              :height "1%"
+              :anchor "top right")
+  (box :orientation "v"
+    (box :orientation "h"
+         :space-evenly false
+         :class "wifilist"
+      (button :onclick "pavucontrol &" " ")
+      (volume-bar
+        :value speaker-volume
+        :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+      )
+    )
+    (box :orientation "h"
+         :space-evenly false
+         :class "wifilist"
+      (button :onclick "pavucontrol &" " ")
+      (volume-bar
+        :value mic-volume
+        :onchange "pactl set-source-volume @DEFAULT_SOURCE@ {}%"
+      )
+    )
+  )
+)
+(defwindow monitor
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive true
+  :windowtype "dock"
+  :wm-ignore true
+  :geometry (geometry
+              :x "0px"
+              :y "10px"
+              :width "1%"
+              :height "1%"
+              :anchor "top right")
+  (box :orientation "h"
+       :class "wifilist"
+    (bar-icon :onclick "kitty btop --force-utf &"
+              :class "monitor-icon"
+              :icon ""
+              :value {EWW_CPU["avg"]}
+    )
+    (bar-icon :onclick "kitty btop --force-utf &"
+              :class "monitor-icon"
+              :icon ""
+              :value {EWW_RAM["used_mem_perc"]}
+    )
+  )
+)
+
 (defwindow top-bar
   :monitor 0 ;; Optional for X11
   :stacking "fg"
@@ -102,24 +162,40 @@
         '🌬️ ${weather.wind} 💧${weather.humidity}'
       )
       (time-text)
-      (panel
-        :width 40
-        :spacing 10
-        (overlay       
-          "‏‏‎                            ‎"
-          (audio-visualiser :cava-width cava-width :width 12 )
-          (box
-            :width 150
-            (cover-art :height 36)
-            (controls :class "controls")
+      (revealer :reveal {playerctl.status != "Stopped"}
+        (box
+          (panel
+            :width 10
+            :spacing 10
+            (overlay       
+              "‏‏‎                            ‎"
+              (box
+                :width 1
+                (image :image-height 36 :path {replace(playerctl.artUrl, 'file://', '')})
+                (box :space-evenly true
+                  :spacing player-button-spacing
+                  :orientation "horizontal"
+                  (button 
+                    :class "controls"
+                    :onclick "playerctl previous"
+                    "󰒮")
+                  (button 
+                    :class "controls"
+                    :onclick "playerctl play-pause"
+                    {playerctl.status == "Paused" ? "󰐊" : "󰏤"})
+                  (button 
+                    :class "controls"
+                    :onclick "playerctl next"
+                    "󰒭")
+                )
+              )
+            )
+            (overlay
+              "‏‏‎                                                 ‎"
+              (progress-bar)
+              (vibin :class "player" :text { playerctl.status == "Stopped" ? "" : "${playerctl.artist}: ${playerctl.title}"} :cap 25)
+            )
           )
-        )
-      )
-      (panel :width 10
-        (overlay
-          "‏‏‎                                                 ‎"
-          (progress-bar)
-          (vibin :class "player" :text { playerctl.status == "Stopped" ? "" : "${playerctl.artist}: ${playerctl.title}"} :cap 25)
         )
       )
     )
@@ -151,12 +227,10 @@
   (box :space-evenly false
     (image :image-height height
         :path "/home/${user}/.config/eww/sprites/right.svg")
-    (box :space-evenly false
+    (button
       :class "timey topbar"  
-      (eventbox
-        :onclick "eww open status --toggle && eww update time-or-date='%I:%M %p'"
-        (label :class "timey" :text {formattime(EWW_TIME, time-or-date)})
-      )
+      :onclick "eww open status --toggle"
+      (label :class "timey" :text {formattime(EWW_TIME, '%I:%M %p')})
     )
     (image :image-height height
         :path "/home/${user}/.config/eww/sprites/left.svg")
@@ -168,21 +242,15 @@
         :spacing 0
   (box :space-evenly false
     :class "topbar lefty"
-  (bar-icon :onscrollup "hyprctl dispatch workspace +1"
-            :onscrolldown "hyprctl dispatch workspace -1"
-            :onclick "eww open status --toggle"
-            :icon "☬"
-            :value {activeworkspace.id*10}
-  )
-  (bar-icon :onclick "eww open notification-frame --toggle"
-            :icon "☭"
-            :value {activeworkspace.windows*10}
-  )
+    (bar-icon :onclick "eww open notification-frame --toggle"
+              :icon "☬"
+              :value {activeworkspace.windows*10}
+    )
 
   (label :limit-width 50 :xalign 0 :text {activewindow.title ?: "YuchiruOS"})
   )
   (image :image-height height
-      :path "/home/soi/.config/eww/sprites/left.svg")
+      :path "/home/${user}/.config/eww/sprites/left.svg")
   )
 )
 
@@ -194,33 +262,24 @@
       :path "/home/${user}/.config/eww/sprites/right.svg")
   (box :space-evenly false
     :class "topbar righty"
-      (bar-icon :onclick "kitty btop --force-utf &"
-                :icon ""
-                :value {EWW_CPU["avg"]}
+      (button 
+        :class "bar-icon"
+        :onclick "eww open monitor --toggle"
+        ""
       )
-      (bar-icon :onclick "kitty btop --force-utf &"
-                :icon ""
-                :value {EWW_RAM["used_mem_perc"]}
+      (button 
+        :class "bar-icon"
+        :onclick "eww open volume --toggle"
+        ""
       )
-      (bar-icon :onclick "eww open wifi --toggle"
-                :icon "󰤨"
-                :value {(EWW_NET["wlp15s0"]["NET_DOWN"]) / 118663}
-      )
-      (bar-icon :onscrollup "pactl set-sink-volume @DEFAULT_SINK@ +5%"
-                :onscrolldown "pactl set-sink-volume @DEFAULT_SINK@ -5%"
-                :onclick "pavucontrol &"
-                :icon ""
-                :value volume
-      )
-      (bar-icon :onscrollup "pactl set-source-volume @DEFAULT_SOURCE@ +5%"
-                :onscrolldown "pactl set-source-volume @DEFAULT_SOURCE@ -5%"
-                :onclick "pavucontrol &"
-                :icon ""
-                :value mic
+      (button 
+        :class "bar-icon"
+        :onclick "eww open wifi --toggle"
+        "󰤨"
       )
     )
-   )
   )
+)
 
 (defwidget powermenu[]
 (box :space-evenly false

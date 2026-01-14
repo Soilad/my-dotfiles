@@ -62,13 +62,12 @@ progress {
   background-color: $secondary;
   border-radius: 10px;
   padding: 2px;
-  margin: 0 -0px 10px 0;
   box-shadow: 0 0 10px rgba($secondary, $glow);
 }
 slider {
-  padding: 5px;
+  padding: 10px;
   // margin: -2.5px 0 0 0;
-  background-color: rgba($tertiary-dark, 0);
+  background-color: rgba($secondary, 0);
   border-radius: 10px;
   // box-shadow: 0 0 10px 1px $tertiary-dark;
 }
@@ -81,6 +80,27 @@ slider {
     background-color: rgba($tertiary-dark,0);
     padding: 0 10px;
   }
+
+}
+
+.bar-icon {
+  label {
+    font-family: '0xProto Nerd Font Mono';
+    font-size: 32;
+  }
+  padding: 10px;
+  &:hover {
+    @include glow;
+  }
+}
+
+.monitor-icon {
+  label {
+    font-family: '0xProto Nerd Font Mono';
+    font-size: 32;
+    padding: 12px;
+  }
+  padding: 10px;
   &:hover {
     @include glow;
   }
