@@ -243,6 +243,7 @@
   (box :space-evenly false
     :class "topbar lefty"
     (bar-icon :onclick "eww open notification-frame --toggle"
+              :class "bar-icon"
               :icon "☬"
               :value {activeworkspace.windows*10}
     )

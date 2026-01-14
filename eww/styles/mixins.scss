@@ -28,7 +28,7 @@
 
 @mixin unglow {
   background-color: rgba($tertiary, $opacity);
-  box-shadow: 0 0 0 1px $secondary, inset 0 0 10px 1px rgba($secondary, $glow),0 0 10px 1px rgba($tertiary-dark,0.4);
+  box-shadow: 0 0 1px 1px $secondary, 0 0 10px 1px $tertiary-dark;
   border-radius: 100px;
 }
 

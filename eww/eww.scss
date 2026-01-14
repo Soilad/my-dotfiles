@@ -191,9 +191,9 @@ circular-progress {
 }
 
 .searchbar {
-  box-shadow: 0 0 1px 1px $secondary, 0 0 10px 1px $tertiary-dark;
   padding: 20px 40px;
   border-radius: 100px;
+  @include unglow;
 }
 
 .notif, .wifilist {
