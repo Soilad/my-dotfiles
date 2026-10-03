@@ -6,7 +6,7 @@
 
 # .config: only the listed subdirectories
 !/.config/
-/.config/*
+/.config/**
 !/.config/eww/
 !/.config/nvim/
 !/.config/hypr/
