@@ -1,0 +1,70 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "logo": {
+    "type": "kitty",
+    "source": "~/.config/fastfetch/FUCK YEAAAAA.png",
+  },
+  "display": {
+    "color": {
+      "keys": "red", // Key color
+      "title": "red" // Title color
+    }
+  },
+  "modules": [
+    "title",
+    {
+      "type": "custom",
+      "format": "┏━━━━━━━━━━━━━━━━━━━━━Hardware━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+      "outputColor": "red"
+    },
+    {
+      "type": "host",
+      "key": " PC"
+    },
+    {
+      "type": "memory",
+      "key": "┃>󰍛 "
+    },
+    {
+      "type": "cpu",
+      "key": "┃>󰻠 "
+    },
+    {
+     "type": "gpu",
+     "key": "┃> "
+    },
+    {
+      "type": "custom",
+      "format": "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "outputColor": "red"
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "┏━━━━━━━━━━━━━━━━━━━━━Software━━━━━━━━━━━━━━━━━━━━━━━━━━━┓",
+      "outputColor": "red"
+    },
+    {
+      "type": "kernel",
+      "key": " Kernel"
+    },
+    {
+      "type": "disk",
+      "key": "┃> "
+    },
+    {
+      "type": "uptime",
+      "key": "┃>󰥔 "
+    },
+    {
+      "type": "battery",
+      "key": "┃> "
+    },
+    {
+      "type": "custom",
+      "format": "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "outputColor": "red"
+    },
+    "break",
+  ]
+}

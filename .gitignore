@@ -6,7 +6,7 @@
 
 # .config: only the listed subdirectories
 !/.config/
-/.config/**
+/.config/*
 !/.config/eww/
 !/.config/nvim/
 !/.config/hypr/
@@ -23,5 +23,6 @@
 
 # Themes
 !/.themes/
+/.themes/Adwaita-AMOLED/
 /.config/nvim/lazy-lock.json
 /.config/fish/fish_variables

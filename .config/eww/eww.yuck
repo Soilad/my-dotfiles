@@ -1,0 +1,544 @@
+(include "./yuck/widgets.yuck")
+(include "./yuck/end.yuck")
+
+(defwindow status
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore false
+  :namespace "eww"
+  :geometry (geometry
+              ; :x "0px"
+              ; :y "-53px"
+              :anchor "top center")
+  (popup :shown reveal-status
+    (powermenu)
+  )
+)
+
+(defwindow bgclock
+  :monitor 0 ;; Optional for X11
+  :stacking "bottom"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore true
+  :namespace "eww"
+  :geometry (
+    geometry
+      :x "4%"
+      :y "4%"
+      :height "30%"
+      ; :width "50%"
+      :anchor "top left"
+  )
+  (idle-revealer
+    :transition "slideright"
+    (box
+      :orientation "h"
+      :space-evenly false
+      (label 
+        :style "font-size: 16; color: #f00;" 
+        :angle -82
+        :text {formattime(EWW_TIME, format-date)}
+      )
+      (box
+        :orientation "v"
+        :space-evenly false
+        (button 
+          :class "bgclock" 
+          :onclick "~/.config/eww/scripts/toggle.sh status &"
+          (label
+            :angle 8
+            :text {formattime(EWW_TIME, format-time)}
+          )
+        )
+        (box
+          :space-evenly false
+          :halign "center"
+          (simple-revealer 
+            :reveal {weather!=""}
+            :transition "slideright"
+            (box
+              :orientation "v"
+              (climate)
+              (wind)
+            )
+          )
+          (simple-revealer 
+            :reveal {playerctl.status != "Stopped"}
+            :transition "slideright"
+            (box
+              :orientation "v"
+              (player-details)
+              (panel
+                :class "panel"
+                :width 10
+                :spacing 10
+                (vibin 
+                  :class "player" 
+                  :text { playerctl.status == "Stopped" ? "" : playerctl.artist}
+                  :cap 35
+               )
+              )
+
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+(defwindow wallpaper
+  :monitor 0 ;; Optional for X11
+  :stacking "bg"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore true
+  :namespace "eww"
+  :geometry (
+    geometry
+      :height "120%"
+      :width  "100%"
+      :y      "-50%"
+      :anchor "center"
+  )
+  (overlay
+    (image
+      :path "/usr/share/wallpapers/soilad-wallpapers/wallpaper.png"
+      :image-height 1060
+      :preserve-aspect-ratio true
+    )
+    ; (transform
+    ;   :translate-y -640
+    ;   :scale-y 1500
+    ;   (audio-visualiser
+    ;     :style "font-size: 36px;"
+    ;     :width 70
+    ;     :angle 180
+    ;   )
+    ; )
+  )
+)
+
+(defwindow search
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore true
+  :focusable "exclusive"
+  :namespace "eww"
+  :geometry (geometry
+    :x "0px"
+    :y "-60%"
+    :width "50%"
+    :height "0%"
+    :anchor "center center"
+  )
+  (box :space-evenly false
+       :spacing search-spacing
+       :class "bg"
+       :orientation "v"
+
+    (box :space-evenly false
+         :spacing search-spacing
+         :class "fg"
+         :orientation "h"
+      (input :class "searchbar" :width 1150
+             :onchange "~/.local/bin/search '{}' &"
+             :onaccept firstapp)
+      (button :class "searchbar" :width 65
+              :onclick "killall eww && eww open-many bgclock stupid-fucking-reverse-corners top-bar wallpaper"
+              "x"))
+
+    (popup :shown reveal-search
+      (box :space-evenly false
+           :spacing search-spacing
+           :orientation "v"
+        ; (audio-visualiser :width 70)
+        (scroll :width 1130 :hscroll true :vscroll false
+          (box :class "container" :space-evenly false :orientation "horizontal"
+            (for app in apps
+               (app-entry :exec {app.exec}
+                          :icon {app.icon}
+                          :name {app.name}
+               )
+            )
+          )
+        )
+        (box :orientation "h"
+          (scroll :height 300 :hscroll false :vscroll true
+            (box :class "container" :orientation "vertical"
+              (for file in files
+                 (file-entry :open_with {file.open_with}
+                             :dir {file.dir}
+                             :icon {file.icon}
+                             :name {file.name}
+                 )
+              )
+            )
+          )
+          (literal :content display)
+        )
+      )
+    )
+  )
+)
+
+(defwindow wifi
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore false
+  :namespace "eww"
+  :geometry (geometry
+              :x "5px"
+              :y "5px"
+              :anchor "top right")
+  (popup :shown reveal-wifi
+    (box :orientation "v"
+         :width 200
+      (button :onclick "systemctl restart NetworkManager.service &" :class "list" "Restart NetworkManager")
+      (button :onclick "kitty fish -c 'nmtui-bw' & eww update reveal-wifi=false" :class "list" "Open nmtui")
+      (for network in wifilist
+        (button :onclick "nmcli device wifi connect '${network}' & eww update reveal-wifi=false"
+                :class "list"
+                {network})
+      )
+    )
+  )
+)
+
+(defwindow volume
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive false
+  :windowtype "dock"
+  :wm-ignore true
+  :namespace "eww"
+  :geometry (geometry
+              :x "5px"
+              :y "5px"
+              :anchor "top right")
+  (popup :shown reveal-volume
+    (box :orientation "v"
+         :width 200
+       (box :orientation "h"
+            :space-evenly false
+            :class "list"
+            (button :onclick "pavucontrol &" "󰃟 ")
+            (volume-bar
+              :value brightness
+              :onchange "brightnessctl -rd intel_backlight set {}% && eww update brightness='{}'"
+            )
+       )
+      (box :orientation "h"
+           :space-evenly false
+           :class "list"
+        (button :onclick "pavucontrol &" " ")
+        (volume-bar
+          :value speaker-volume
+          :onchange "pactl set-sink-volume @DEFAULT_SINK@ $(({} * 151 / 100))% && eww update speaker-volume='{}'"
+        )
+      )
+      (box :orientation "h"
+           :space-evenly false
+           :class "list"
+        (button :onclick "pavucontrol &" " ")
+        (volume-bar
+          :value mic-volume
+          :onchange "pactl set-source-volume @DEFAULT_SOURCE@ $(({} * 151 / 100))% && eww update mic-volume='{}'"
+        )
+      )
+    )
+  )
+)
+
+(defwindow top-bar
+  :monitor 0 ;; Optional for X11
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  :namespace "eww"
+  :geometry (geometry
+              :x "0%"
+              :y "-0.1px"
+              :width "100%"
+              :height "36px"
+              :anchor "top center")
+  (centerbox
+    (left)
+    (box
+      :space-evenly true
+      :spacing 32
+      :halign "center"
+      (busy-revealer 
+        :extra {weather!=""}
+        :transition bar-transition
+        (box
+          :space-evenly false
+          :spacing 32
+          (climate)
+          (wind)
+        )
+      )
+      (time-text)
+      (busy-revealer :extra {playerctl.status != "Stopped"}
+                :transition bar-transition
+        (box 
+          :space-evenly false
+          :spacing 32
+          (player-details)
+        )
+      )
+    )
+    (right)
+  )
+)
+
+(defwindow stupid-fucking-reverse-corners
+  :monitor 0 ;; Optional for X11
+  :stacking "bg"
+  :exclusive false
+  :focusable false
+  :namespace "eww"
+  :geometry (geometry
+              :x "0%"
+              :y "-0.1px"
+              :width "175.35%"
+              :height "36px"
+              :anchor "top center")
+  (box :space-evenly true
+       :spacing 300
+    (image :image-height height
+        :path "/home/${user}/.config/eww/sprites/left.svg")
+    (image :image-height height
+        :path "/home/${user}/.config/eww/sprites/right.svg")
+  )
+)
+
+;; ─── Widgets ─────────────────────────────────────────────────────────
+
+(defwidget time-text []
+  (box 
+    :space-evenly false
+    :spacing 4
+    (busy-revealer 
+      :extra true
+      :transition "slideleft"
+      (box :space-evenly false
+        (image :image-height height :path "/home/${user}/.config/eww/sprites/right.svg")
+          (button
+            :class "timey topbar"
+            :onclick "~/.config/eww/scripts/toggle.sh status &"
+            (label :class "timey" :text {formattime(EWW_TIME, format-time)})
+          )
+        (image :image-height height :path "/home/${user}/.config/eww/sprites/left.svg")
+      )
+    )
+    (simple-revealer 
+      :reveal {playerctl.status != "Stopped"}
+      :transition "slideleft"
+      (player-controls)
+    )
+  )
+)
+
+(defwidget left []
+  (box :space-evenly false
+        :spacing 0
+    (box :space-evenly false
+      :class "topbar lefty"
+      (bar-icon :onclick "~/.config/eww/scripts/toggle.sh search"
+                :class "bar-icon"
+                :value1 {EWW_BATTERY.total_avg}
+                :value2 {EWW_BATTERY.total_avg}
+                { EWW_BATTERY.BAT0.status == "Discharging" ? "☭" : "☬"}
+      )
+      ; (label :limit-width 50 :xalign 0 :text {activewindow.title ?: "SoiladOS"})
+    )
+    (image 
+      :image-height height
+      :path "/home/${user}/.config/eww/sprites/left.svg"
+    )
+    (panel
+      :class "panel"
+      :width 10
+      :spacing 0
+      :halign "center"
+      (scroll-icon 
+        :onclick ""
+        :class "scroll-icon"
+        :onscroll "case {} in up) brightnessctl -d intel_backlight set 1%- ;; down) brightnessctl -d intel_backlight set 1%+ ;; esac; eww update brightness=$(brightnessctl -d intel_backlight g | awk '{ print $1/17777*100 }')"
+        :value {brightness}
+        "󰃟"
+      )
+      (scroll-icon 
+        :onclick ""
+        :class "scroll-icon"
+        :onscroll "case {} in up) brightnessctl -d :white:kbd_backlight set 1%- ;; down) brightnessctl -d :white:kbd_backlight set 1%+ ;; esac; eww update kbbrightness=$(brightnessctl -d :white:kbd_backlight g | awk '{ print $1/14660*100 }')"
+        :value {kbbrightness}
+        "󰌌"
+      )
+    )
+  )
+)
+
+(defwidget right []
+  (box :space-evenly false
+        :spacing 0
+        :halign "end"
+    (panel
+      :class "panel"
+      :width 10
+      :spacing 0
+      :halign "center"
+      (scroll-icon
+        :onclick "pavucontrol &"
+        :class "scroll-icon"
+        :onscroll "case {} in up) wpctl set-volume @DEFAULT_AUDIO_SINK@ ${scroll-sensitivity}%- ;; down) wpctl set-volume @DEFAULT_AUDIO_SINK@ ${scroll-sensitivity}%+ ;; esac; eww update speaker-volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf \"%d\", $2*100}')"
+        :value {speaker-volume}
+        ""
+      )
+      (scroll-icon 
+        :onclick "pavucontrol &"
+        :class "scroll-icon"
+        :onscroll "case {} in up) wpctl set-volume @DEFAULT_AUDIO_SOURCE@ ${scroll-sensitivity}%- ;; down) wpctl set-volume @DEFAULT_AUDIO_SOURCE@ ${scroll-sensitivity}%+ ;; esac; eww update mic-volume=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{printf \"%d\", $2*100}')"
+        :clockwise false
+        :value {mic-volume}
+        ""
+      )
+    )
+    (image :image-height height
+        :path "/home/${user}/.config/eww/sprites/right.svg")
+    (box :space-evenly false
+      :class "topbar righty"
+      (bar-icon :onclick "kitty btop --force-utf &"
+                :class "bar-icon"
+                :value1 {EWW_TEMPS["CORETEMP_CORE_0"]}
+                :value2 {EWW_CPU["avg"]}
+                ""
+      )
+      (bar-icon :onclick "kitty btop --force-utf &"
+                :class "bar-icon"
+                :value1 {
+                  EWW_TEMPS["BAT0_TEMP"]
+                }
+                :value2 {EWW_RAM["used_mem_perc"]}
+                ""
+      )
+      (bar-icon :onclick "~/.config/eww/scripts/toggle.sh wifi && ~/.config/eww/scripts/toggle.sh volume close && ./scripts/wifi.sh"
+                :class "bar-icon"
+                :value1 {EWW_NET["wlan0"]["NET_DOWN"]}
+                :value2 {EWW_NET["wlan0"]["NET_UP"]}
+                "󰤨"
+      )
+    )
+  )
+)
+
+(defwidget powermenu[]
+(box :space-evenly false
+    :halign "center"
+    :valign "center"
+    :orientation "h"
+    (box :space-evenly false
+         :orientation "v"
+      ""
+      ""
+      ""
+      (box :space-evenly false
+           :class "bg"
+           :orientation "v"
+        (label :class "smol" :text {formattime(EWW_TIME, format-date)})
+        (calendar)
+      )
+      (box :space-evenly false
+        :class "powermenu"
+        :spacing power-spacing
+        :orientation "v"
+        (box :space-evenly false
+          :spacing power-spacing
+          :orientation "h"
+          (button :onclick "eww update reveal-status=false; shutdown now"
+            "󰐥")
+          (button :onclick "eww update reveal-status=false; reboot"
+            "󰜉")
+          (button :onclick "eww update reveal-status=false; loginctl terminate-session"
+            "󰍃")
+          (button :onclick "eww update reveal-status=false; suspend"
+            "󰒲")
+        )
+      )
+    )
+  )
+)
+
+(defwidget player-details[]
+  (panel
+    :class "panel"
+    :width 10
+    :spacing 10
+    (vibin 
+      :class "player" 
+      :text { playerctl.status == "Stopped" ? "" : playerctl.title}
+      :cap 35
+   )
+  )
+)
+
+(defwidget player-controls[]
+  (panel
+    :class "panel"
+    :width 0
+    (box 
+      :space-evenly false
+      :orientation "h"
+      (scroll-icon
+        :onclick 'playerctl previous && eww update playerctl="$(bash ~/.config/eww/scripts/playerctl.sh)"'
+        :class "scroll-icon"
+        :onscroll "case {} in up) playerctl position ${scroll-sensitivity / 5000}%- ;; down) playerctl position ${scroll-sensitivity / 5000}%+ ;; esac; eww update playerctl=\"$(bash ~/.config/eww/scripts/playerctl.sh)\""
+        :value {(cava[0] + cava[1])/2}
+        :start-at {50 - (cava[1]/2)}
+        ""
+      )
+      (scroll-icon
+        :onclick 'playerctl play-pause && eww update playerctl="$(bash ~/.config/eww/scripts/playerctl.sh)"'
+        :class "scroll-icon"
+        :onscroll "case {} in up) playerctl position ${scroll-sensitivity / 5000}%- ;; down) playerctl position ${scroll-sensitivity / 5000}%+ ;; esac; eww update playerctl=\"$(bash ~/.config/eww/scripts/playerctl.sh)\""
+        :value    {playerctl.position / playerctl.length * 100}
+        :start-at {50-(playerctl.position / playerctl.length * 50)}
+        {playerctl.status == "Paused" ? "" : ""}
+      )
+      (scroll-icon
+        :onclick 'playerctl next && eww update playerctl="$(bash ~/.config/eww/scripts/playerctl.sh)"'
+        :class "scroll-icon"
+        :onscroll "case {} in up) playerctl position ${scroll-sensitivity / 5000}%- ;; down) playerctl position ${scroll-sensitivity / 5000}%+ ;; esac; eww update playerctl=\"$(bash ~/.config/eww/scripts/playerctl.sh)\""
+        :clockwise false
+        :value {(cava[2] + cava[3])/2}
+        :start-at {50 + (cava[2]/2)}
+        ""
+      )
+    )
+  )
+)
+
+(defwidget climate[]
+  (panel 
+    :width 120
+    :class "panel"
+    :halign "center"
+    "${weather.icon}   ${weather.feels_like}"
+  )
+)
+
+(defwidget wind[]
+  (panel 
+    :width 180
+    :class "panel"
+    '🌬️ ${weather.wind} 💧${weather.humidity}'
+  )
+)
