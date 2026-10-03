@@ -1,0 +1,29 @@
+# Ignore everything
+*
+
+# Keep .gitignore itself tracked
+!.gitignore
+
+# Unignore the parent directories so Git can descend into them
+!.config/
+!.config/eww/
+!.config/nvim/
+!.config/hypr/
+!.config/fish/
+!.config/kitty/
+!.config/fastfetch/
+!.local/
+!.local/bin/
+!.themes/
+
+# Unignore the actual contents
+!.config/eww/**
+!.config/nvim/**
+!.config/hypr/**
+!.config/fish/**
+!.config/kitty/**
+!.config/fastfetch/**
+!.config/starship.toml
+!.local/bin/search
+!.themes/**
+.themes/Adwaita-AMOLED/
